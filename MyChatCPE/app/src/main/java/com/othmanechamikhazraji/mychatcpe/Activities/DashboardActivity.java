@@ -17,7 +17,7 @@ import static android.widget.Toast.LENGTH_LONG;
 public class DashboardActivity extends AppCompatActivity {
 
     private Button sendBtn;
-    private Button messagesBtn;
+    private Button messageListeBtn;
 
     private static final String TAG = DashboardActivity.class.getSimpleName();
     private static final String API_BASE_URL = "http://formation-android-esaip.herokuapp.com";
@@ -30,53 +30,42 @@ public class DashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
 
 
-        Intent intent = getIntent();
+        final Intent intentDashboardActivity = getIntent();
         final String message = new StringBuilder("user : ")
-                .append(intent.getStringExtra(EXTRA_LOGIN))
+                .append(intentDashboardActivity.getStringExtra(EXTRA_LOGIN))
                 .append(" password : ")
-                .append(intent.getStringExtra(EXTRA_PASSWORD))
+                .append(intentDashboardActivity.getStringExtra(EXTRA_PASSWORD))
                 .toString();
 
         sendBtn = (Button) findViewById(R.id.sendBtn);
-        messagesBtn = (Button) findViewById(R.id.messagesBtn);
+        messageListeBtn = (Button) findViewById(R.id.messagesBtn);
 
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Create Toast message (context, string resource, length)
-                String message2 = new StringBuilder("test send message : ")
-                        .append(message)
-                        .toString();
-                Toast message = Toast.makeText(DashboardActivity.this, message2, LENGTH_LONG);
-                // Show Toast message
-                message.show();
 
-                // Declare activity switch intent
-                //Intent intent = new Intent(MainActivity.this, SendActivity.class);
-                //intent.putExtra(EXTRA_LOGIN, username.getText().toString());
+              /*  // Declare activity switch intent
+                Intent intentSendMessageActivity = new Intent(DashboardActivity.this, SendMessageActivity.class);
+                intentSendMessageActivity.putExtra(EXTRA_LOGIN, intentDashboardActivity.getStringExtra(EXTRA_LOGIN));
+                intentSendMessageActivity.putExtra(EXTRA_PASSWORD, intentDashboardActivity.getStringArrayExtra(EXTRA_PASSWORD));
 
                 // Start activity
-                //startActivity(intent);
+                startActivity(intentSendMessageActivity);*/
             }
         });
 
-        messagesBtn.setOnClickListener(new View.OnClickListener() {
+        messageListeBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                // Create Toast message (context, string resource, length)
-                String message3 = new StringBuilder("test liste message : ")
-                        .append(message)
-                        .toString();
-                Toast message = Toast.makeText(DashboardActivity.this, message3, LENGTH_LONG);
-                // Show Toast message
-                message.show();
+
                 // Declare activity switch intent
-                //Intent intent = new Intent(MainActivity.this, MessagesActivity.class);
-                //intent.putExtra(EXTRA_LOGIN, username.getText().toString());
+                Intent intentMessagesListActivity = new Intent(DashboardActivity.this, MessageListActivity.class);
+                intentMessagesListActivity.putExtra(EXTRA_LOGIN, intentDashboardActivity.getStringExtra(EXTRA_LOGIN));
+                intentMessagesListActivity.putExtra(EXTRA_PASSWORD, intentDashboardActivity.getStringArrayExtra(EXTRA_PASSWORD));
 
                 // Start activity
-                //startActivity(intent);
+                startActivity(intentMessagesListActivity);
             }
         });
 

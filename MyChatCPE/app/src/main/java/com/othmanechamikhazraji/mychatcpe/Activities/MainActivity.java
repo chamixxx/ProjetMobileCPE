@@ -1,4 +1,4 @@
-package com.othmanechamikhazraji.mychatcpe;
+package com.othmanechamikhazraji.mychatcpe.Activities;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.othmanechamikhazraji.mychatcpe.R;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;

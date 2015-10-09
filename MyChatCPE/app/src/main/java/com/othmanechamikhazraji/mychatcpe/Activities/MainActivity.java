@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,13 +16,11 @@ import android.widget.Toast;
 
 import com.othmanechamikhazraji.mychatcpe.R;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 
 import static android.widget.Toast.LENGTH_LONG;
 
@@ -29,7 +28,7 @@ import static android.widget.Toast.LENGTH_LONG;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final String API_BASE_URL = "http://formation-android-esaip.herokuapp.com";
+    private static final String API_BASE_URL = "http://training.loicortola.com/chat-rest/2.0";
     public static final String EXTRA_LOGIN = "ext_login";
     public static final String EXTRA_PASSWORD = "ext_password";
 
@@ -134,27 +133,38 @@ public class MainActivity extends AppCompatActivity {
             String username = params[0];
             String password = params[1];
 
-            // Here, call the login webservice
-            HttpClient client = new DefaultHttpClient();
+            String credentials = username + ":" + password;
+            String base64EncodedCredentials = Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
 
             // Webservice URL
-            String url = new StringBuilder(API_BASE_URL + "/connect/")
-                    .append(username)
-                    .append("/")
-                    .append(password)
-                    .toString();
-            // Request
+            String urlString = API_BASE_URL + "/connect";
+            URL url = null;
             try {
-                // FIXME to be removed. Simulates heavy network workload
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                url = new URL(urlString);
+            } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-            HttpGet loginRequest = new HttpGet(url);
+            HttpURLConnection urlConnection = null;
+            try {
+                urlConnection = (HttpURLConnection) (url != null ? url.openConnection() : null);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (urlConnection != null) {
+                urlConnection.setReadTimeout(10000 /* milliseconds */);
+                urlConnection.setConnectTimeout(15000 /* milliseconds */);
+                try {
+                    urlConnection.setRequestMethod("GET");
+                    urlConnection.setRequestProperty("Authorization", "Basic " + base64EncodedCredentials);
+                    urlConnection.setDoInput(true);
+                    urlConnection.connect();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
 
             try {
-                HttpResponse response = client.execute(loginRequest);
-                if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                if ((urlConnection != null ? urlConnection.getResponseCode() : 0) == HttpURLConnection.HTTP_OK) {
                     return true;
                 }
             } catch (IOException e) {

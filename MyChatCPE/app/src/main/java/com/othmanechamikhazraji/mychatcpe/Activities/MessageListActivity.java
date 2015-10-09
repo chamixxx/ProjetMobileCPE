@@ -1,8 +1,10 @@
 package com.othmanechamikhazraji.mychatcpe.Activities;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -12,6 +14,8 @@ import android.widget.Toast;
 import com.othmanechamikhazraji.mychatcpe.R;
 import com.othmanechamikhazraji.mychatcpe.Utils.CustomArrayAdapter;
 import com.othmanechamikhazraji.mychatcpe.Utils.Util;
+
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -28,10 +32,13 @@ import static android.widget.Toast.LENGTH_LONG;
 public class MessageListActivity extends AppCompatActivity {
 
     private static final String TAG = MessageListActivity.class.getSimpleName();
-    private static final String API_BASE_URL = "http://formation-android-esaip.herokuapp.com";
+    private static final String API_BASE_URL = "http://training.loicortola.com/chat-rest/2.0";
+    public static final String EXTRA_LOGIN = "ext_login";
+    public static final String EXTRA_PASSWORD = "ext_password";
 
     private ProgressBar progressBar;
-    private String allMessages = "";
+    private String allMessagesString = "";
+    private JSONObject allMessageJSON = null;
 
     private PullMessageTask pullMessageTask;
 
@@ -41,8 +48,12 @@ public class MessageListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_message_list_activity);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_message);
 
-        String usernameStr = "byche";
-        String passwordStr = "byche";
+        final Intent intentMessageListActivity = getIntent();
+
+
+        String usernameStr = intentMessageListActivity.getStringExtra(EXTRA_LOGIN);
+        String passwordStr = intentMessageListActivity.getStringExtra(EXTRA_PASSWORD);
+
 
         // Cancel previous task if it is still running
         if (pullMessageTask != null && pullMessageTask.getStatus().equals(AsyncTask.Status.RUNNING)) {
@@ -80,9 +91,14 @@ public class MessageListActivity extends AppCompatActivity {
         protected Boolean doInBackground(String... params) {
             String username = params[0];
             String password = params[1];
-            int statusCode = 0;
+
+            String credentials = username + ":" + password;
+            String base64EncodedCredentials = Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
+
+            int responseCode = 0;
+
             // Webservice URL
-            String urlString = API_BASE_URL + "/messages/" + username + "/" + password;
+            String urlString = API_BASE_URL + "/messages?&limit=10&offset=0";
             URL url = null;
 
             try {
@@ -92,12 +108,23 @@ public class MessageListActivity extends AppCompatActivity {
             }
             HttpURLConnection urlConnection = null;
 
-
             try {
                 urlConnection = (HttpURLConnection) (url != null ? url.openConnection() : null);
-                statusCode = urlConnection != null ? urlConnection.getResponseCode() : 0;
             } catch (IOException e) {
                 Log.w(TAG, "Exception occurred while getting messages in: " + e.getMessage());
+            }
+            if (urlConnection != null) {
+                urlConnection.setReadTimeout(10000 /* milliseconds */);
+                urlConnection.setConnectTimeout(15000 /* milliseconds */);
+                try {
+                    urlConnection.setRequestMethod("GET");
+                    urlConnection.setRequestProperty("Authorization", "Basic " + base64EncodedCredentials);
+                    urlConnection.setDoInput(true);
+                    urlConnection.connect();
+                    responseCode = urlConnection.getResponseCode();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
             StringBuilder result = null;
@@ -119,13 +146,13 @@ public class MessageListActivity extends AppCompatActivity {
                 }
             }
 
-            if (statusCode == HttpURLConnection.HTTP_OK) {
-                allMessages = resultString;
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                allMessagesString = resultString;
+                allMessageJSON = Util.stringToJson(allMessagesString);
                 return true;
             }
             return false;
         }
-
 
         @Override
         protected void onPostExecute(Boolean success) {
@@ -138,8 +165,8 @@ public class MessageListActivity extends AppCompatActivity {
             }
 
             // Everything good!
-            Toast.makeText(MessageListActivity.this, R.string.login_success, LENGTH_LONG).show();
-            String[] splitMassageArray = Util.splitMessages(allMessages);
+            Toast.makeText(MessageListActivity.this, R.string.messages_success, LENGTH_LONG).show();
+            String[] splitMassageArray = Util.splitMessages(allMessagesString);
             List<String> messageList = Util.populateListMessages(splitMassageArray);
 
             CustomArrayAdapter messageAdapter = new CustomArrayAdapter(MessageListActivity.this, messageList);

@@ -20,7 +20,6 @@ public class DashboardActivity extends AppCompatActivity {
     private Button messageListeBtn;
 
     private static final String TAG = DashboardActivity.class.getSimpleName();
-    private static final String API_BASE_URL = "http://formation-android-esaip.herokuapp.com";
     public static final String EXTRA_LOGIN = "ext_login";
     public static final String EXTRA_PASSWORD = "ext_password";
 
@@ -31,11 +30,6 @@ public class DashboardActivity extends AppCompatActivity {
 
 
         final Intent intentDashboardActivity = getIntent();
-        final String message = new StringBuilder("user : ")
-                .append(intentDashboardActivity.getStringExtra(EXTRA_LOGIN))
-                .append(" password : ")
-                .append(intentDashboardActivity.getStringExtra(EXTRA_PASSWORD))
-                .toString();
 
         sendBtn = (Button) findViewById(R.id.sendBtn);
         messageListeBtn = (Button) findViewById(R.id.messagesBtn);
@@ -62,7 +56,7 @@ public class DashboardActivity extends AppCompatActivity {
                 // Declare activity switch intent
                 Intent intentMessagesListActivity = new Intent(DashboardActivity.this, MessageListActivity.class);
                 intentMessagesListActivity.putExtra(EXTRA_LOGIN, intentDashboardActivity.getStringExtra(EXTRA_LOGIN));
-                intentMessagesListActivity.putExtra(EXTRA_PASSWORD, intentDashboardActivity.getStringArrayExtra(EXTRA_PASSWORD));
+                intentMessagesListActivity.putExtra(EXTRA_PASSWORD, intentDashboardActivity.getStringExtra(EXTRA_PASSWORD));
 
                 // Start activity
                 startActivity(intentMessagesListActivity);

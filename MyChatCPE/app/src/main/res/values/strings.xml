@@ -9,6 +9,7 @@
     <string name="reset">Annuler</string>
     <string name="form_reset">Form elements reset.</string>
     <string name="login_success">Login Successful.</string>
+    <string name="messages_success">Pull Messages Successful.</string>
     <string name="login_error">Login Failed.</string>
     <string name="title_activity_dashboard">DashboardActivity</string>
 

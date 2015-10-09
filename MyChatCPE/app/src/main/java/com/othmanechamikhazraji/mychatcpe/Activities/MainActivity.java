@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String API_BASE_URL = "http://formation-android-esaip.herokuapp.com";
     public static final String EXTRA_LOGIN = "ext_login";
+    public static final String EXTRA_PASSWORD = "ext_password";
 
     private EditText username;
     private EditText password;
@@ -179,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
             // Declare activity switch intent
             Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
             intent.putExtra(EXTRA_LOGIN, username.getText().toString());
+            intent.putExtra(EXTRA_PASSWORD, password.getText().toString());
 
             // Start activity
             startActivity(intent);

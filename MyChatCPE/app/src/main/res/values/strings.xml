@@ -12,4 +12,8 @@
     <string name="login_error">Login Failed.</string>
     <string name="title_activity_dashboard">DashboardActivity</string>
 
+    <!-- Interface / Dashboard -->
+    <string name="messages">Liste des messages</string>
+    <string name="send">Envoyer un message</string>
+
 </resources>

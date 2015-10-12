@@ -97,6 +97,9 @@ public class MessageListActivity extends AppCompatActivity {
 
             int responseCode = 0;
 
+            StringBuilder result = null;
+            String resultString = null;
+
             // Webservice URL
             String urlString = API_BASE_URL + "/messages?&limit=10&offset=0";
             URL url = null;
@@ -122,17 +125,9 @@ public class MessageListActivity extends AppCompatActivity {
                     urlConnection.setDoInput(true);
                     urlConnection.connect();
                     responseCode = urlConnection.getResponseCode();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
 
-            StringBuilder result = null;
-            String resultString = null;
-            if (urlConnection != null) {
-                try {
-                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                    InputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
                     result = new StringBuilder();
                     String line;
                     while ((line = reader.readLine()) != null) {
@@ -145,7 +140,6 @@ public class MessageListActivity extends AppCompatActivity {
                     urlConnection.disconnect();
                 }
             }
-
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 allMessagesString = resultString;
                 allMessageJSON = Util.stringToJson(allMessagesString);

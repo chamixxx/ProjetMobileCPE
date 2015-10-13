@@ -19,6 +19,15 @@ import java.util.List;
  * Created by othmanechamikhazraji on 09/10/15.
  */
 public class Util {
+    public static JSONObject stringToJson (String stringToConvert) {
+        try {
+            return new JSONObject(stringToConvert);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static JSONArray stringToJsonArray (String stringToConvert) {
         try {
             return new JSONArray(stringToConvert);

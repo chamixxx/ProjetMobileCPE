@@ -1,6 +1,8 @@
 package com.othmanechamikhazraji.mychatcpe.Activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,11 +17,13 @@ import android.widget.Toast;
 import com.othmanechamikhazraji.mychatcpe.R;
 import com.othmanechamikhazraji.mychatcpe.Utils.Util;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,7 +31,6 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 import java.util.UUID;
 
 import static android.widget.Toast.LENGTH_LONG;
@@ -37,6 +40,7 @@ public class SendMessageActivity extends AppCompatActivity {
     public static final String EXTRA_LOGIN = "ext_login";
     public static final String EXTRA_PASSWORD = "ext_password";
     public static final String API_BASE_URL = "http://training.loicortola.com/chat-rest/2.0";
+    public static final String IMAGE_TEST_URL = "https://pbs.twimg.com/profile_images/631535425333518336/D-i_GqpT.jpg";
     private static final String TAG = MessageListActivity.class.getSimpleName();
     private Button sendMessageBtn;
     private EditText messageEditText;
@@ -137,9 +141,13 @@ public class SendMessageActivity extends AppCompatActivity {
 
                     //Create JSONObject here
                     JSONObject jsonParam = new JSONObject();
-                    jsonParam.put("uuid", uuidStr);
-                    jsonParam.put("login", username);
-                    jsonParam.put("message", messageToSend);
+                    //jsonParam.put("uuid", uuidStr);
+                    //jsonParam.put("login", username);
+                    //jsonParam.put("message", messageToSend);
+                    jsonParam = createJSONMessage(username,uuidStr);
+                    if(jsonParam == null) {
+                        jsonParam.put("fail","fail");
+                    }
                     OutputStreamWriter outputStreamWriter = new OutputStreamWriter(urlConnection.getOutputStream());
                     outputStreamWriter.write(jsonParam.toString());
                     outputStreamWriter.flush();
@@ -201,6 +209,59 @@ public class SendMessageActivity extends AppCompatActivity {
             e.printStackTrace();
             return "";
         }
+    }
+
+    private String encodeImage(Bitmap image) {
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        byte[] b = byteArrayOutputStream.toByteArray();
+        String imageEncoded = Base64.encodeToString(b,Base64.DEFAULT);
+
+        Log.e("LOOK", imageEncoded);
+        return imageEncoded;
+    }
+
+    private Bitmap getBitmapURL() {
+        try {
+            URL url = new URL(IMAGE_TEST_URL);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            Log.w(TAG, "Exception occurred while transfering IMG URL to bitmap in: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private JSONObject createJSONMessage(String usernameStr, String uuidStr) {
+        try {
+            JSONObject jsonParam = new JSONObject();
+            jsonParam.put("uuid", uuidStr);
+            jsonParam.put("login", usernameStr);
+            jsonParam.put("message", messageToSend);
+
+            Bitmap bitmapImage = getBitmapURL();
+            String encodedImage = encodeImage(bitmapImage);
+            JSONArray jsonImageArray = new JSONArray();
+            JSONObject jsonImageObject = new JSONObject();
+            jsonImageObject.put("mimeType","image/jpeg");
+            jsonImageObject.put("data",encodedImage);
+            jsonImageArray.put(jsonImageObject);
+
+            jsonParam.put("attachments",jsonImageArray);
+            return jsonParam;
+        }
+        catch (JSONException e) {
+            Log.w(TAG, "Exception occurred while transfering IMG URL to bitmap in: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+
+
     }
 
 

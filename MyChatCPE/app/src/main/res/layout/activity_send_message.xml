@@ -31,24 +31,25 @@
 
         <EditText
             android:id="@+id/imageURL1"
-            android:layout_below="@+id/messageText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="write your image url here"/>
+            android:layout_below="@+id/messageText"
+            android:hint="write your image URL here!"/>
 
         <EditText
             android:id="@+id/imageURL2"
-            android:layout_below="@+id/imageURL1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="write your image url here"/>
+            android:layout_below="@+id/imageURL1"
+            android:hint="write your image URL here!"/>
 
         <EditText
             android:id="@+id/imageURL3"
-            android:layout_below="@+id/imageURL2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="write your image url here"/>
+            android:layout_below="@+id/imageURL2"
+            android:hint="write your image URL here!"/>
+
 
         <Button
             android:id="@+id/sendMsgBtn"

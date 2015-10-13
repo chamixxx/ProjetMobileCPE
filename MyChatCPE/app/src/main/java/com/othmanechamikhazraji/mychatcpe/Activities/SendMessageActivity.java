@@ -223,7 +223,7 @@ public class SendMessageActivity extends AppCompatActivity {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         image.compress(format, 100, byteArrayOutputStream);
         byte[] b = byteArrayOutputStream.toByteArray();
-        String imageEncoded = Base64.encodeToString(b,Base64.DEFAULT);
+        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
         return imageEncoded;
     }
 
@@ -277,9 +277,33 @@ public class SendMessageActivity extends AppCompatActivity {
                 jsonImageArray.put(jsonImageObject);
             }
 
+            //Image from drawable
+            Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.testus);
+            JSONObject jsonImageObject = JsonObjectDrawable(image);
+            if(jsonImageObject != null) {
+                jsonImageArray.put(jsonImageObject);
+            }
+
             //Final array of image added to JSON
             jsonParam.put("attachments",jsonImageArray);
             return jsonParam;
+        }
+        catch (JSONException e) {
+            Log.w(TAG, "Exception occurred while transfering IMG URL to bitmap in: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    private JSONObject JsonObjectDrawable(Bitmap bitmap) {
+        JSONObject jsonImageObject = new JSONObject();
+        Bitmap.CompressFormat format = Bitmap.CompressFormat.PNG;
+        String encodedImage = encodeImage(bitmap, format);
+        try {
+            jsonImageObject.put("mimeType", "image/png");
+            jsonImageObject.put("data", encodedImage);
+            return jsonImageObject;
         }
         catch (JSONException e) {
             Log.w(TAG, "Exception occurred while transfering IMG URL to bitmap in: " + e.getMessage());

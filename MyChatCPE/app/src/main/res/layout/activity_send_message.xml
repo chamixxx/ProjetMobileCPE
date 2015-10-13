@@ -29,9 +29,30 @@
             android:hint="write your message here!"
             />
 
+        <EditText
+            android:id="@+id/imageURL1"
+            android:layout_below="@+id/messageText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="write your image url here"/>
+
+        <EditText
+            android:id="@+id/imageURL2"
+            android:layout_below="@+id/imageURL1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="write your image url here"/>
+
+        <EditText
+            android:id="@+id/imageURL3"
+            android:layout_below="@+id/imageURL2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="write your image url here"/>
+
         <Button
             android:id="@+id/sendMsgBtn"
-            android:layout_below="@+id/messageText"
+            android:layout_below="@+id/imageURL3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/send"

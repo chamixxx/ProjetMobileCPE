@@ -1,8 +1,10 @@
 package com.othmanechamikhazraji.mychatcpe.Activities;
 
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -40,10 +42,14 @@ public class SendMessageActivity extends AppCompatActivity {
     public static final String EXTRA_LOGIN = "ext_login";
     public static final String EXTRA_PASSWORD = "ext_password";
     public static final String API_BASE_URL = "http://training.loicortola.com/chat-rest/2.0";
-    public static final String IMAGE_TEST_URL = "https://pbs.twimg.com/profile_images/631535425333518336/D-i_GqpT.jpg";
     private static final String TAG = MessageListActivity.class.getSimpleName();
+
+    private String[] imageUrls = new String[3];
     private Button sendMessageBtn;
     private EditText messageEditText;
+    private EditText image1UrlEditText;
+    private EditText image2UrlEditText;
+    private EditText image3UrlEditText;
     private SendMessageTask sendMessageTask;
     private ProgressBar progressBar;
     private String messageToSend;
@@ -58,6 +64,9 @@ public class SendMessageActivity extends AppCompatActivity {
         final Intent intentSendMessageActivity = getIntent();
         sendMessageBtn = (Button) findViewById(R.id.sendMsgBtn);
         messageEditText = (EditText) findViewById(R.id.messageText);
+        image1UrlEditText = (EditText) findViewById(R.id.imageURL1);
+        image2UrlEditText = (EditText) findViewById(R.id.imageURL2);
+        image3UrlEditText = (EditText) findViewById(R.id.imageURL3);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_message);
 
         sendMessageBtn.setOnClickListener(new View.OnClickListener() {
@@ -65,13 +74,17 @@ public class SendMessageActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String usernameStr = intentSendMessageActivity.getStringExtra(EXTRA_LOGIN);
                 String passwordStr = intentSendMessageActivity.getStringExtra(EXTRA_PASSWORD);
+
                 messageToSend = messageEditText.getText().toString();
+                imageUrls[0] = "https://pbs.twimg.com/profile_images/631535425333518336/D-i_GqpT.jpg";
+                imageUrls[1] = "https://lunaextrema.files.wordpress.com/2011/11/gnfn.png";
+                imageUrls[2] = "https://upload.wikimedia.org/wikipedia/en/8/89/Brood_War_box_art_(StarCraft).jpg";
 
                 // Cancel previous task if it is still running
                 if (sendMessageTask != null && sendMessageTask.getStatus().equals(AsyncTask.Status.RUNNING)) {
                     sendMessageTask.cancel(true);
                 }
-                // Launch sendMessageTask Task
+                // Launch sendMessageTask
                 sendMessageTask = new SendMessageTask();
                 sendMessageTask.execute(usernameStr, passwordStr);
 
@@ -139,12 +152,7 @@ public class SendMessageActivity extends AppCompatActivity {
                     urlConnection.setRequestProperty("Content-Type", "application/json");
                     urlConnection.connect();
 
-                    //Create JSONObject here
-                    JSONObject jsonParam = new JSONObject();
-                    //jsonParam.put("uuid", uuidStr);
-                    //jsonParam.put("login", username);
-                    //jsonParam.put("message", messageToSend);
-                    jsonParam = createJSONMessage(username,uuidStr);
+                    JSONObject jsonParam = createJSONMessage(username,uuidStr);
                     if(jsonParam == null) {
                         jsonParam.put("fail","fail");
                     }
@@ -194,7 +202,6 @@ public class SendMessageActivity extends AppCompatActivity {
         }
     }
 
-
     private String getUUID() {
         UUID idOne = UUID.randomUUID();
         return idOne.toString();
@@ -211,20 +218,18 @@ public class SendMessageActivity extends AppCompatActivity {
         }
     }
 
-    private String encodeImage(Bitmap image) {
+    private String encodeImage(Bitmap image, Bitmap.CompressFormat format) {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        image.compress(format, 100, byteArrayOutputStream);
         byte[] b = byteArrayOutputStream.toByteArray();
         String imageEncoded = Base64.encodeToString(b,Base64.DEFAULT);
-
-        Log.e("LOOK", imageEncoded);
         return imageEncoded;
     }
 
-    private Bitmap getBitmapURL() {
+    private Bitmap getBitmapURL(String urlStr) {
         try {
-            URL url = new URL(IMAGE_TEST_URL);
+            URL url = new URL(urlStr);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setDoInput(true);
             connection.connect();
@@ -237,6 +242,14 @@ public class SendMessageActivity extends AppCompatActivity {
         }
     }
 
+    private Bitmap.CompressFormat getImageFormat(String urlStr) {
+        Bitmap.CompressFormat format = Bitmap.CompressFormat.JPEG;
+        if(urlStr.endsWith(".png")){
+            format = Bitmap.CompressFormat.PNG;
+        }
+        return format;
+    }
+
     private JSONObject createJSONMessage(String usernameStr, String uuidStr) {
         try {
             JSONObject jsonParam = new JSONObject();
@@ -244,14 +257,27 @@ public class SendMessageActivity extends AppCompatActivity {
             jsonParam.put("login", usernameStr);
             jsonParam.put("message", messageToSend);
 
-            Bitmap bitmapImage = getBitmapURL();
-            String encodedImage = encodeImage(bitmapImage);
+            //Images from coded URLs
             JSONArray jsonImageArray = new JSONArray();
-            JSONObject jsonImageObject = new JSONObject();
-            jsonImageObject.put("mimeType","image/jpeg");
-            jsonImageObject.put("data",encodedImage);
-            jsonImageArray.put(jsonImageObject);
+            for(int i =0; i<3; i++){
+                if(imageUrls[i] == "") {
+                    continue;
+                }
+                JSONObject jsonImageObject = new JSONObject();
+                Bitmap bitmapImage = getBitmapURL(imageUrls[i]);
+                Bitmap.CompressFormat format = getImageFormat(imageUrls[i]);
+                String encodedImage = encodeImage(bitmapImage, format);
+                if(format == Bitmap.CompressFormat.JPEG) {
+                    jsonImageObject.put("mimeType","image/jpeg");
+                }
+                else {
+                    jsonImageObject.put("mimeType","image/png");
+                }
+                jsonImageObject.put("data",encodedImage);
+                jsonImageArray.put(jsonImageObject);
+            }
 
+            //Final array of image added to JSON
             jsonParam.put("attachments",jsonImageArray);
             return jsonParam;
         }
@@ -260,10 +286,5 @@ public class SendMessageActivity extends AppCompatActivity {
             e.printStackTrace();
             return null;
         }
-
-
     }
-
-
-
 }

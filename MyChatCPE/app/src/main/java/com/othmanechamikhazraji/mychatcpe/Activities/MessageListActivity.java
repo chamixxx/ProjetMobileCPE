@@ -4,17 +4,22 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.othmanechamikhazraji.mychatcpe.R;
-import com.othmanechamikhazraji.mychatcpe.Utils.CustomArrayAdapter;
+import com.othmanechamikhazraji.mychatcpe.Utils.DividerItemDecoration;
+import com.othmanechamikhazraji.mychatcpe.Utils.MyAdapter;
 import com.othmanechamikhazraji.mychatcpe.Utils.Util;
+import com.othmanechamikhazraji.mychatcpe.model.ReceivedMessage;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -25,6 +30,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.widget.Toast.LENGTH_LONG;
@@ -36,9 +42,14 @@ public class MessageListActivity extends AppCompatActivity {
     public static final String EXTRA_LOGIN = "ext_login";
     public static final String EXTRA_PASSWORD = "ext_password";
 
+    private RecyclerView messageRecyclerView;
+    private RecyclerView.Adapter messageAdapter;
+    private RecyclerView.LayoutManager messageLayoutManager;
+
     private ProgressBar progressBar;
     private String allMessagesString = "";
-    private JSONObject allMessageJSON = null;
+    private JSONArray allMessageJSON = null;
+    private List<ReceivedMessage> receivedMessageList;
 
     private PullMessageTask pullMessageTask;
 
@@ -50,10 +61,17 @@ public class MessageListActivity extends AppCompatActivity {
 
         final Intent intentMessageListActivity = getIntent();
 
-
         String usernameStr = intentMessageListActivity.getStringExtra(EXTRA_LOGIN);
         String passwordStr = intentMessageListActivity.getStringExtra(EXTRA_PASSWORD);
 
+        receivedMessageList = new ArrayList<>();
+
+        messageRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        messageLayoutManager = new LinearLayoutManager(this);
+        messageRecyclerView.setLayoutManager(messageLayoutManager);
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL_LIST);
+        messageRecyclerView.addItemDecoration(itemDecoration);
 
         // Cancel previous task if it is still running
         if (pullMessageTask != null && pullMessageTask.getStatus().equals(AsyncTask.Status.RUNNING)) {
@@ -142,7 +160,7 @@ public class MessageListActivity extends AppCompatActivity {
             }
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 allMessagesString = resultString;
-                allMessageJSON = Util.stringToJson(allMessagesString);
+                allMessageJSON = Util.stringToJsonArray(allMessagesString);
                 return true;
             }
             return false;
@@ -160,12 +178,21 @@ public class MessageListActivity extends AppCompatActivity {
 
             // Everything good!
             Toast.makeText(MessageListActivity.this, R.string.messages_success, LENGTH_LONG).show();
-            String[] splitMassageArray = Util.splitMessages(allMessagesString);
-            List<String> messageList = Util.populateListMessages(splitMassageArray);
 
-            CustomArrayAdapter messageAdapter = new CustomArrayAdapter(MessageListActivity.this, messageList);
-            ListView listViewMessage = (ListView) findViewById(R.id.listView);
-            listViewMessage.setAdapter(messageAdapter);
+            for (int i=0; i<allMessageJSON.length(); i++) {
+                try {
+                    JSONObject currentMessageJson = allMessageJSON.getJSONObject(i);
+                    String currentUuid = currentMessageJson.getString("uuid");
+                    String currentLogin = currentMessageJson.getString("login");
+                    String currentMessage = currentMessageJson.getString("message");
+                    ReceivedMessage receivedMessage = new ReceivedMessage(currentUuid, currentLogin, currentMessage, "");
+                    receivedMessageList.add(receivedMessage);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            messageAdapter = new MyAdapter(receivedMessageList);
+            messageRecyclerView.setAdapter(messageAdapter);
         }
     }
 }

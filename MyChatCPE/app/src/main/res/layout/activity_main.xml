@@ -2,21 +2,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#598bc9"
-        android:gravity="center"
-        android:padding="20dp"
-        android:text="@string/app_name"
-        android:textSize="30sp" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/footer"
-        android:layout_below="@+id/header"
         android:paddingEnd="10dp"
         android:paddingStart="10dp">
 

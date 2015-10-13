@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:fitsSystemWindows="true"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.othmanechamikhazraji.mychatcpe.Activities.DashboardActivity">
 
-    <TextView
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#598bc9"
-        android:gravity="center"
-        android:padding="20dp"
-        android:text="@string/app_name"
-        android:textSize="30sp" />
 
-    <LinearLayout
-        android:layout_below="@+id/header"
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:layout_centerInParent="true"
         >
 
         <Button
@@ -28,17 +21,21 @@
             android:layout_height="wrap_content"
             android:id="@+id/messagesBtn"
             android:text="@string/messages"
-        />
+            android:layout_above="@+id/sendBtn"
+
+            />
 
         <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/sendBtn"
             android:text="@string/send"
-        />
+            android:layout_centerInParent="true"
+
+            />
 
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
 

@@ -10,18 +10,27 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.othmanechamikhazraji.mychatcpe.R;
+import com.othmanechamikhazraji.mychatcpe.Utils.Util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.UUID;
+
+import static android.widget.Toast.LENGTH_LONG;
 
 public class SendMessageActivity extends AppCompatActivity {
 
@@ -34,6 +43,8 @@ public class SendMessageActivity extends AppCompatActivity {
     private SendMessageTask sendMessageTask;
     private ProgressBar progressBar;
     private String messageToSend;
+    private String ResponseMessageString = "";
+    private JSONObject ResponseMessageJSON = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +97,8 @@ public class SendMessageActivity extends AppCompatActivity {
             //Parameters
             String username = params[0];
             String password = params[1];
+            StringBuilder result = null;
+            String resultString = null;
 
             int responseCode = 0;
             String uuidStr = getUUID();
@@ -133,15 +146,27 @@ public class SendMessageActivity extends AppCompatActivity {
                     outputStreamWriter.close();
                     responseCode = urlConnection.getResponseCode();
 
+                    InputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    result = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+
+
                 } catch (IOException | JSONException e) {
                     e.printStackTrace();
                 }
                 finally {
+                    resultString = result != null ? result.toString() : null;
                     urlConnection.disconnect();
                 }
             }
 
             if (responseCode == HttpURLConnection.HTTP_OK) {
+                ResponseMessageString = resultString;
+                ResponseMessageJSON = Util.stringToJson(ResponseMessageString);
                 return true;
             }
             return false;
@@ -155,6 +180,9 @@ public class SendMessageActivity extends AppCompatActivity {
             if (!success) {
                 return;
             }
+            // Everything good!
+
+            Toast.makeText(SendMessageActivity.this, getMessageContent(ResponseMessageJSON), LENGTH_LONG).show();
         }
     }
 
@@ -162,6 +190,17 @@ public class SendMessageActivity extends AppCompatActivity {
     private String getUUID() {
         UUID idOne = UUID.randomUUID();
         return idOne.toString();
+    }
+
+    private String getMessageContent(JSONObject response) {
+        try {
+            String message = response.get("message").toString();
+            return message;
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
 

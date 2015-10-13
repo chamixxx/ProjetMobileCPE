@@ -31,13 +31,13 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-              /*  // Declare activity switch intent
+                // Declare activity switch intent
                 Intent intentSendMessageActivity = new Intent(DashboardActivity.this, SendMessageActivity.class);
                 intentSendMessageActivity.putExtra(EXTRA_LOGIN, intentDashboardActivity.getStringExtra(EXTRA_LOGIN));
-                intentSendMessageActivity.putExtra(EXTRA_PASSWORD, intentDashboardActivity.getStringArrayExtra(EXTRA_PASSWORD));
+                intentSendMessageActivity.putExtra(EXTRA_PASSWORD, intentDashboardActivity.getStringExtra(EXTRA_PASSWORD));
 
                 // Start activity
-                startActivity(intentSendMessageActivity);*/
+                startActivity(intentSendMessageActivity);
             }
         });
 

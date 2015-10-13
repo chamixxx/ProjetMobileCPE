@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -17,6 +18,12 @@ import com.othmanechamikhazraji.mychatcpe.Utils.DividerItemDecoration;
 import com.othmanechamikhazraji.mychatcpe.Utils.MyAdapter;
 import com.othmanechamikhazraji.mychatcpe.Utils.Util;
 import com.othmanechamikhazraji.mychatcpe.model.ReceivedMessage;
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+import com.squareup.picasso.OkHttpDownloader;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import java.io.BufferedInputStream;
@@ -47,6 +54,7 @@ public class MessageListActivity extends AppCompatActivity {
     private String allMessagesString = "";
     private JSONArray allMessageJSON = null;
     private List<ReceivedMessage> receivedMessageList;
+    private Picasso picasso;
 
     private PullMessageTask pullMessageTask;
 
@@ -58,8 +66,23 @@ public class MessageListActivity extends AppCompatActivity {
 
         final Intent intentMessageListActivity = getIntent();
 
-        String usernameStr = intentMessageListActivity.getStringExtra(EXTRA_LOGIN);
-        String passwordStr = intentMessageListActivity.getStringExtra(EXTRA_PASSWORD);
+        final String usernameStr = intentMessageListActivity.getStringExtra(EXTRA_LOGIN);
+        final String passwordStr = intentMessageListActivity.getStringExtra(EXTRA_PASSWORD);
+
+        //Setup basic auth for picasso
+        OkHttpClient picassoClient = new OkHttpClient();
+        picassoClient.interceptors().add(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                String credentials = usernameStr + ":" + passwordStr;
+                String base64EncodedCredentials = Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
+                Request newRequest = chain.request().newBuilder()
+                        .addHeader("Authorization", "Basic " + base64EncodedCredentials)
+                        .build();
+                return chain.proceed(newRequest);
+            }
+        });
+        picasso = new Picasso.Builder(this).downloader(new OkHttpDownloader(picassoClient)).build();
 
         receivedMessageList = new ArrayList<>();
 
@@ -116,7 +139,7 @@ public class MessageListActivity extends AppCompatActivity {
             String resultString = null;
 
             // Webservice URL
-            String urlString = API_BASE_URL + "/messages?&limit=50&offset=0";
+            String urlString = API_BASE_URL + "/messages?&limit=100&offset=0";
             URL url = null;
 
             try {
@@ -175,7 +198,7 @@ public class MessageListActivity extends AppCompatActivity {
             // Everything good!
             Toast.makeText(MessageListActivity.this, R.string.messages_success, LENGTH_LONG).show();
             receivedMessageList = Util.makeMessageList(allMessageJSON);
-            messageAdapter = new MyAdapter(receivedMessageList);
+            messageAdapter = new MyAdapter(receivedMessageList, picasso);
             messageRecyclerView.setAdapter(messageAdapter);
         }
     }

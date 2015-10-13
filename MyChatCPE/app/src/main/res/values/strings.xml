@@ -13,6 +13,7 @@
     <string name="login_error">Login Failed.</string>
     <string name="title_activity_dashboard">Dashboard</string>
     <string name="title_activity_messageList">Messages</string>
+    <string name="contentInfoImages">Images sent by the user</string>
 
     <!-- Interface / Dashboard -->
     <string name="messages">Liste des messages</string>

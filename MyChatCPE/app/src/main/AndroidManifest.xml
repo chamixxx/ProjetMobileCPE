@@ -27,7 +27,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.MainActivity" />
         </activity>
-        <activity android:name=".Activities.MessageListActivity" >
+        <activity android:name=".Activities.MessageListActivity"
+            android:label="@string/title_activity_messageList"
+            android:parentActivityName=".Activities.DashboardActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.DashboardActivity" />
         </activity>
     </application>
 

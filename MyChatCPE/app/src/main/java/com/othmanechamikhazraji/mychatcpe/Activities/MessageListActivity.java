@@ -19,9 +19,6 @@ import com.othmanechamikhazraji.mychatcpe.Utils.Util;
 import com.othmanechamikhazraji.mychatcpe.model.ReceivedMessage;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -119,7 +116,7 @@ public class MessageListActivity extends AppCompatActivity {
             String resultString = null;
 
             // Webservice URL
-            String urlString = API_BASE_URL + "/messages?&limit=10&offset=0";
+            String urlString = API_BASE_URL + "/messages?&limit=50&offset=0";
             URL url = null;
 
             try {
@@ -175,22 +172,9 @@ public class MessageListActivity extends AppCompatActivity {
             if (!success) {
                 return;
             }
-
             // Everything good!
             Toast.makeText(MessageListActivity.this, R.string.messages_success, LENGTH_LONG).show();
-
-            for (int i=0; i<allMessageJSON.length(); i++) {
-                try {
-                    JSONObject currentMessageJson = allMessageJSON.getJSONObject(i);
-                    String currentUuid = currentMessageJson.getString("uuid");
-                    String currentLogin = currentMessageJson.getString("login");
-                    String currentMessage = currentMessageJson.getString("message");
-                    ReceivedMessage receivedMessage = new ReceivedMessage(currentUuid, currentLogin, currentMessage, "");
-                    receivedMessageList.add(receivedMessage);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+            receivedMessageList = Util.makeMessageList(allMessageJSON);
             messageAdapter = new MyAdapter(receivedMessageList);
             messageRecyclerView.setAdapter(messageAdapter);
         }

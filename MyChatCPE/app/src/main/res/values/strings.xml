@@ -11,7 +11,8 @@
     <string name="login_success">Login Successful.</string>
     <string name="messages_success">Pull Messages Successful.</string>
     <string name="login_error">Login Failed.</string>
-    <string name="title_activity_dashboard">DashboardActivity</string>
+    <string name="title_activity_dashboard">Dashboard</string>
+    <string name="title_activity_messageList">Messages</string>
 
     <!-- Interface / Dashboard -->
     <string name="messages">Liste des messages</string>

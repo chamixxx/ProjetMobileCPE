@@ -18,7 +18,7 @@
     <!-- Interface / Dashboard -->
     <string name="messages">Liste des messages</string>
     <string name="send">Envoyer un message</string>
-    <string name="title_activity_send_message">SendMessageActivity</string>
+    <string name="title_activity_send_message">Envoyer un message</string>
 
 
 </resources>

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.dd.processbutton.iml.ActionProcessButton;
 import com.othmanechamikhazraji.mychatcpe.ui.Activities.MainActivity;
 
 import java.io.IOException;
@@ -29,18 +30,17 @@ public class LoginTask extends AsyncTask<String, Void, Boolean> {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String API_BASE_URL = "http://training.loicortola.com/chat-rest/2.0";
-    private ProgressBar progressBar;
+    private ActionProcessButton btn;
     private LoginTaskFinishedListener loginTaskFinishedListener;
 
-    public LoginTask (ProgressBar progressBar, LoginTaskFinishedListener loginTaskFinishedListener) {
-        this.progressBar = progressBar;
+    public LoginTask (ActionProcessButton btn, LoginTaskFinishedListener loginTaskFinishedListener) {
+        this.btn = btn;
         this.loginTaskFinishedListener = loginTaskFinishedListener ;
     }
 
     @Override
     protected void onPreExecute() {
-        // Here, show progress bar
-        progressBar.setVisibility(View.VISIBLE);
+        btn.setProgress(1);
     }
 
     /**
@@ -94,7 +94,6 @@ public class LoginTask extends AsyncTask<String, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        progressBar.setVisibility(View.GONE);
         loginTaskFinishedListener.onPostExecute(success);
     }
 }

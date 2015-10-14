@@ -6,19 +6,16 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
+import com.dd.processbutton.iml.ActionProcessButton;
 import com.othmanechamikhazraji.mychatcpe.R;
 import com.othmanechamikhazraji.mychatcpe.task.LoginTask;
 import com.othmanechamikhazraji.mychatcpe.task.LoginTask.LoginTaskFinishedListener;
 
-import static android.widget.Toast.LENGTH_LONG;
 
 public class MainActivity extends AppCompatActivity implements LoginTaskFinishedListener {
 
@@ -27,9 +24,7 @@ public class MainActivity extends AppCompatActivity implements LoginTaskFinished
 
     private EditText username;
     private EditText password;
-    private Button resetBtn;
-    private Button submitBtn;
-    private ProgressBar progressBar;
+    private ActionProcessButton submitBtn;
     private LoginTask loginTask;
 
     @Override
@@ -37,23 +32,39 @@ public class MainActivity extends AppCompatActivity implements LoginTaskFinished
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // Retrieve views from XML
-        resetBtn = (Button) findViewById(R.id.reset_button);
-        submitBtn = (Button) findViewById(R.id.submit_button);
+        submitBtn = (ActionProcessButton) findViewById(R.id.submit_button);
+        submitBtn.setMode(ActionProcessButton.Mode.ENDLESS);
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
-        // Set on click listener on reset button
-        resetBtn.setOnClickListener(new View.OnClickListener() {
+        username.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                // Reset username text to empty
-                username.setText("");
-                password.setText("");
-                // Create Toast message (context, string resource, length)
-                Toast message = Toast.makeText(MainActivity.this, R.string.form_reset, LENGTH_LONG);
-                // Show Toast message
-                message.show();
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                submitBtn.setProgress(0);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                submitBtn.setProgress(0);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
@@ -66,8 +77,11 @@ public class MainActivity extends AppCompatActivity implements LoginTaskFinished
                 if (loginTask != null && loginTask.getStatus().equals(AsyncTask.Status.RUNNING)) {
                     loginTask.cancel(true);
                 }
+                submitBtn.setEnabled(false);
+                username.setEnabled(false);
+                password.setEnabled(false);
                 // Launch Login Task
-                loginTask = new LoginTask(progressBar, MainActivity.this);
+                loginTask = new LoginTask(submitBtn, MainActivity.this);
                 loginTask.execute(usernameStr, passwordStr);
             }
         });
@@ -81,35 +95,17 @@ public class MainActivity extends AppCompatActivity implements LoginTaskFinished
         super.onPause();
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override
     public void onPostExecute(Boolean success) {
         // Wrong login entered
         if (!success) {
-            Toast.makeText(this, R.string.login_error, LENGTH_LONG).show();
+            submitBtn.setProgress(-1);
+            submitBtn.setEnabled(true);
+            username.setEnabled(true);
+            password.setEnabled(true);
             return;
         }
+        submitBtn.setProgress(100);
         // Saving login password in sharedPreferences to avoid using extra each time we change
         // activities
         SharedPreferences sharedPreferences = this.getSharedPreferences
@@ -120,7 +116,6 @@ public class MainActivity extends AppCompatActivity implements LoginTaskFinished
         editor.apply();
 
         // Everything good!
-        Toast.makeText(this, R.string.login_success, LENGTH_LONG).show();
         Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
     }

@@ -36,7 +36,6 @@ public class MyAdapter extends RecyclerView.Adapter {
             images = (LinearLayout) view.findViewById(R.id.list_item_images);
         }
     }
-
     // Provide a suitable constructor (depends on the kind of dataset)
     public MyAdapter(List<MessageModel> myDataSet, Picasso picasso, Context context) {
         this.picasso = picasso;

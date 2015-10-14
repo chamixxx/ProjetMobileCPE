@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +29,8 @@ import org.json.JSONArray;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static android.widget.Toast.LENGTH_LONG;
@@ -38,6 +41,7 @@ public class MessageListActivity extends AppCompatActivity implements PullMessag
     public static final String EXTRA_PASSWORD = "ext_password";
 
     private RecyclerView messageRecyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView.Adapter messageAdapter;
     private RecyclerView.LayoutManager messageLayoutManager;
 
@@ -76,6 +80,18 @@ public class MessageListActivity extends AppCompatActivity implements PullMessag
 
         receivedMessageList = new ArrayList<>();
 
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (pullMessageTask != null && pullMessageTask.getStatus().equals(AsyncTask.Status.RUNNING)) {
+                    pullMessageTask.cancel(true);
+                }
+                pullMessageTask = new PullMessageTask(progressBar, MessageListActivity.this);
+                pullMessageTask.execute(usernameStr, passwordStr);
+            }
+        });
+
         messageRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         messageLayoutManager = new LinearLayoutManager(this);
         messageRecyclerView.setLayoutManager(messageLayoutManager);
@@ -109,7 +125,9 @@ public class MessageListActivity extends AppCompatActivity implements PullMessag
         // Everything good!
         Toast.makeText(MessageListActivity.this, R.string.messages_success, LENGTH_LONG).show();
         receivedMessageList = Util.makeMessageList(allMessageJSON);
+        Collections.reverse(receivedMessageList);
         messageAdapter = new MyAdapter(receivedMessageList, picasso, this);
         messageRecyclerView.setAdapter(messageAdapter);
+        swipeRefreshLayout.setRefreshing(false);
     }
 }

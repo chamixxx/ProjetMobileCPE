@@ -1,12 +1,9 @@
-package com.othmanechamikhazraji.mychatcpe.ui.Activities;
+package com.othmanechamikhazraji.mychatcpe.ui.activities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
@@ -16,14 +13,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.othmanechamikhazraji.mychatcpe.R;
 import com.othmanechamikhazraji.mychatcpe.Utils.Util;
-import com.othmanechamikhazraji.mychatcpe.model.Attachment;
-import com.othmanechamikhazraji.mychatcpe.model.MessageModel;
-import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -35,8 +27,6 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import static android.widget.Toast.LENGTH_LONG;
 

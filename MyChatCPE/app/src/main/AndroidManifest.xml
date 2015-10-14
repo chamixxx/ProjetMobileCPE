@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".ui.Activities.MainActivity"
+            android:name=".ui.activities.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,22 +20,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.Activities.DashboardActivity"
+            android:name=".ui.activities.DashboardActivity"
             android:label="@string/title_activity_dashboard"
-            android:parentActivityName=".ui.Activities.MainActivity">
+            android:parentActivityName=".ui.activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.Activities.MainActivity" />
+                android:value=".ui.activities.MainActivity" />
         </activity>
-        <activity android:name=".ui.Activities.MessageListActivity"
+        <activity android:name=".ui.activities.MessageListActivity"
             android:label="@string/title_activity_messageList"
-            android:parentActivityName=".ui.Activities.DashboardActivity">
+            android:parentActivityName=".ui.activities.DashboardActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.Activities.DashboardActivity" />
+                android:value=".ui.activities.DashboardActivity" />
         </activity>
         <activity
-            android:name=".ui.Activities.SendMessageActivity"
+            android:name=".ui.activities.SendMessageActivity"
             android:label="@string/title_activity_send_message" >
         </activity>
     </application>

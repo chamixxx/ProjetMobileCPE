@@ -1,4 +1,4 @@
-package com.othmanechamikhazraji.mychatcpe.ui.activities;
+package com.othmanechamikhazraji.mychatcpe.ui.Activities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.othmanechamikhazraji.mychatcpe.R;
 import com.othmanechamikhazraji.mychatcpe.Utils.DividerItemDecoration;
-import com.othmanechamikhazraji.mychatcpe.ui.activities.adapter.MyAdapter;
+import com.othmanechamikhazraji.mychatcpe.ui.Activities.adapter.MyAdapter;
 import com.othmanechamikhazraji.mychatcpe.Utils.Util;
 import com.othmanechamikhazraji.mychatcpe.model.MessageModel;
 import com.squareup.okhttp.Interceptor;

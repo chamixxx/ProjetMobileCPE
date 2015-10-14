@@ -1,6 +1,8 @@
-package com.othmanechamikhazraji.mychatcpe.ui.activities;
+package com.othmanechamikhazraji.mychatcpe.ui.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,12 +22,14 @@ import static android.widget.Toast.LENGTH_LONG;
 
 public class MainActivity extends AppCompatActivity implements LoginTaskFinishedListener {
 
+    private static final String EXTRA_LOGIN = "ext_login";
+    private static final String EXTRA_PASSWORD = "ext_password";
+
     private EditText username;
     private EditText password;
     private Button resetBtn;
     private Button submitBtn;
     private ProgressBar progressBar;
-
     private LoginTask loginTask;
 
     @Override
@@ -100,16 +104,24 @@ public class MainActivity extends AppCompatActivity implements LoginTaskFinished
     }
 
     @Override
-    public void onPostExecute() {
+    public void onPostExecute(Boolean success) {
+        // Wrong login entered
+        if (!success) {
+            Toast.makeText(this, R.string.login_error, LENGTH_LONG).show();
+            return;
+        }
+        // Saving login password in sharedPreferences to avoid using extra each time we change
+        // activities
+        SharedPreferences sharedPreferences = this.getSharedPreferences
+                ("authentication", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(EXTRA_LOGIN, username.getText().toString());
+        editor.putString(EXTRA_PASSWORD, password.getText().toString());
+        editor.apply();
+
         // Everything good!
         Toast.makeText(this, R.string.login_success, LENGTH_LONG).show();
-
-        // Declare activity switch intent
         Intent intent = new Intent(this, DashboardActivity.class);
-        // Start activity
         startActivity(intent);
-        // If you don't want the current activity to be in the backstack,
-        // uncomment the following line:
-        // finish();
     }
 }

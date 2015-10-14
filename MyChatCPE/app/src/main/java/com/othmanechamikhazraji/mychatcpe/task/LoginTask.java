@@ -4,24 +4,18 @@ package com.othmanechamikhazraji.mychatcpe.task;
  * Created by othmanechamikhazraji on 14/10/15.
  */
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import com.othmanechamikhazraji.mychatcpe.R;
-import com.othmanechamikhazraji.mychatcpe.ui.activities.MainActivity;
+import com.othmanechamikhazraji.mychatcpe.ui.Activities.MainActivity;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import static android.widget.Toast.LENGTH_LONG;
 
 /**
  * LoginTask: AsyncTask to process authentication.
@@ -30,22 +24,17 @@ import static android.widget.Toast.LENGTH_LONG;
 public class LoginTask extends AsyncTask<String, Void, Boolean> {
 
     public interface LoginTaskFinishedListener {
-        void onPostExecute();
+        void onPostExecute(Boolean success);
     }
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String API_BASE_URL = "http://training.loicortola.com/chat-rest/2.0";
-    private static final String EXTRA_LOGIN = "ext_login";
-    private static final String EXTRA_PASSWORD = "ext_password";
     private ProgressBar progressBar;
-    private Context context;
     private LoginTaskFinishedListener loginTaskFinishedListener;
 
-
-    public LoginTask (ProgressBar progressBar, Context context) {
+    public LoginTask (ProgressBar progressBar, LoginTaskFinishedListener loginTaskFinishedListener) {
         this.progressBar = progressBar;
-        this.context = context;
-        this.loginTaskFinishedListener = (LoginTaskFinishedListener) context;
+        this.loginTaskFinishedListener = loginTaskFinishedListener ;
     }
 
     @Override
@@ -95,14 +84,6 @@ public class LoginTask extends AsyncTask<String, Void, Boolean> {
 
         try {
             if ((urlConnection != null ? urlConnection.getResponseCode() : 0) == HttpURLConnection.HTTP_OK) {
-                // Saving login password in sharedPreferences to avoid using extra each time we change
-                // activities
-                SharedPreferences sharedPreferences =context.getSharedPreferences
-                        ("authentication", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(EXTRA_LOGIN,username);
-                editor.putString(EXTRA_PASSWORD,password);
-                editor.apply();
                 return true;
             }
         } catch (IOException e) {
@@ -113,14 +94,7 @@ public class LoginTask extends AsyncTask<String, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        // Here, hide progress bar and proceed to login if OK.
         progressBar.setVisibility(View.GONE);
-
-        // Wrong login entered
-        if (!success) {
-            Toast.makeText(context, R.string.login_error, LENGTH_LONG).show();
-            return;
-        }
-        loginTaskFinishedListener.onPostExecute();
+        loginTaskFinishedListener.onPostExecute(success);
     }
 }

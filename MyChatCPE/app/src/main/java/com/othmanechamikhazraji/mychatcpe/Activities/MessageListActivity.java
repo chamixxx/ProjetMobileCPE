@@ -1,6 +1,7 @@
 package com.othmanechamikhazraji.mychatcpe.Activities;
 
-import android.content.Intent;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -26,6 +26,7 @@ import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -64,10 +65,11 @@ public class MessageListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_message_list_activity);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_message);
 
-        final Intent intentMessageListActivity = getIntent();
+        SharedPreferences sharedPreferences = this.getSharedPreferences
+                ("authentication", Context.MODE_PRIVATE);
 
-        final String usernameStr = intentMessageListActivity.getStringExtra(EXTRA_LOGIN);
-        final String passwordStr = intentMessageListActivity.getStringExtra(EXTRA_PASSWORD);
+        final String usernameStr = sharedPreferences.getString(EXTRA_LOGIN, "");
+        final String passwordStr = sharedPreferences.getString(EXTRA_PASSWORD, "");
 
         //Setup basic auth for picasso
         OkHttpClient picassoClient = new OkHttpClient();
@@ -102,6 +104,7 @@ public class MessageListActivity extends AppCompatActivity {
         pullMessageTask.execute(usernameStr, passwordStr);
 
     }
+
     @Override
     protected void onPause() {
         if (pullMessageTask != null) {

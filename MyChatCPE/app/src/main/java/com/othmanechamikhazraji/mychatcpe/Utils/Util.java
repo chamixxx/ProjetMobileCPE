@@ -1,8 +1,5 @@
 package com.othmanechamikhazraji.mychatcpe.Utils;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
 import com.google.gson.Gson;
 import com.othmanechamikhazraji.mychatcpe.model.ReceivedMessage;
 
@@ -10,8 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 

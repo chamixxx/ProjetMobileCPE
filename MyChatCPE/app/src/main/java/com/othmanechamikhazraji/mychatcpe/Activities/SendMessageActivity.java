@@ -1,6 +1,8 @@
 package com.othmanechamikhazraji.mychatcpe.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -61,7 +63,6 @@ public class SendMessageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_message);
 
-        final Intent intentSendMessageActivity = getIntent();
         sendMessageBtn = (Button) findViewById(R.id.sendMsgBtn);
         messageEditText = (EditText) findViewById(R.id.messageText);
         image1UrlEditText = (EditText) findViewById(R.id.imageURL1);
@@ -69,12 +70,14 @@ public class SendMessageActivity extends AppCompatActivity {
         image3UrlEditText = (EditText) findViewById(R.id.imageURL3);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_message);
 
+        SharedPreferences sharedPreferences = this.getSharedPreferences
+                ("authentication", Context.MODE_PRIVATE);
+        final String usernameStr = sharedPreferences.getString(EXTRA_LOGIN, "");
+        final String passwordStr = sharedPreferences.getString(EXTRA_PASSWORD, "");
+
         sendMessageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String usernameStr = intentSendMessageActivity.getStringExtra(EXTRA_LOGIN);
-                String passwordStr = intentSendMessageActivity.getStringExtra(EXTRA_PASSWORD);
-
                 messageToSend = messageEditText.getText().toString();
                 imageUrls[0] = "https://pbs.twimg.com/profile_images/631535425333518336/D-i_GqpT.jpg";
                 imageUrls[1] = "https://lunaextrema.files.wordpress.com/2011/11/gnfn.png";
@@ -87,10 +90,8 @@ public class SendMessageActivity extends AppCompatActivity {
                 // Launch sendMessageTask
                 sendMessageTask = new SendMessageTask();
                 sendMessageTask.execute(usernameStr, passwordStr);
-
             }
         });
-
     }
 
     @Override
@@ -294,7 +295,6 @@ public class SendMessageActivity extends AppCompatActivity {
             return null;
         }
     }
-
 
     private JSONObject JsonObjectDrawable(Bitmap bitmap) {
         JSONObject jsonImageObject = new JSONObject();

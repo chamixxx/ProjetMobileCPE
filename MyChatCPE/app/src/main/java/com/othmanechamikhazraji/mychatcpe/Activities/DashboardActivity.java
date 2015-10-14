@@ -13,16 +13,10 @@ public class DashboardActivity extends AppCompatActivity {
     private Button sendBtn;
     private Button messageListeBtn;
 
-    private static final String TAG = DashboardActivity.class.getSimpleName();
-    public static final String EXTRA_LOGIN = "ext_login";
-    public static final String EXTRA_PASSWORD = "ext_password";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-
-        final Intent intentDashboardActivity = getIntent();
 
         sendBtn = (Button) findViewById(R.id.sendBtn);
         messageListeBtn = (Button) findViewById(R.id.messagesBtn);
@@ -30,33 +24,21 @@ public class DashboardActivity extends AppCompatActivity {
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 // Declare activity switch intent
                 Intent intentSendMessageActivity = new Intent(DashboardActivity.this, SendMessageActivity.class);
-                intentSendMessageActivity.putExtra(EXTRA_LOGIN, intentDashboardActivity.getStringExtra(EXTRA_LOGIN));
-                intentSendMessageActivity.putExtra(EXTRA_PASSWORD, intentDashboardActivity.getStringExtra(EXTRA_PASSWORD));
-
                 // Start activity
                 startActivity(intentSendMessageActivity);
             }
         });
 
         messageListeBtn.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
-
                 // Declare activity switch intent
                 Intent intentMessagesListActivity = new Intent(DashboardActivity.this, MessageListActivity.class);
-                intentMessagesListActivity.putExtra(EXTRA_LOGIN, intentDashboardActivity.getStringExtra(EXTRA_LOGIN));
-                intentMessagesListActivity.putExtra(EXTRA_PASSWORD, intentDashboardActivity.getStringExtra(EXTRA_PASSWORD));
-
                 // Start activity
                 startActivity(intentMessagesListActivity);
             }
         });
-
-
     }
-
 }

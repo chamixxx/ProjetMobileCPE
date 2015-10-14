@@ -1,6 +1,8 @@
 package com.othmanechamikhazraji.mychatcpe.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +21,6 @@ import com.othmanechamikhazraji.mychatcpe.R;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 
 import static android.widget.Toast.LENGTH_LONG;
@@ -165,6 +166,14 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 if ((urlConnection != null ? urlConnection.getResponseCode() : 0) == HttpURLConnection.HTTP_OK) {
+                    // Saving login password in sharedPreferences to avoid using extra each time we change
+                    // activities
+                    SharedPreferences sharedPreferences = MainActivity.this.getSharedPreferences
+                            ("authentication",Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(EXTRA_LOGIN,username);
+                    editor.putString(EXTRA_PASSWORD,password);
+                    editor.apply();
                     return true;
                 }
             } catch (IOException e) {
@@ -189,9 +198,6 @@ public class MainActivity extends AppCompatActivity {
 
             // Declare activity switch intent
             Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
-            intent.putExtra(EXTRA_LOGIN, username.getText().toString());
-            intent.putExtra(EXTRA_PASSWORD, password.getText().toString());
-
             // Start activity
             startActivity(intent);
             // If you don't want the current activity to be in the backstack,

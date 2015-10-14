@@ -109,7 +109,7 @@ public class MessageListActivity extends AppCompatActivity implements PullMessag
         // Everything good!
         Toast.makeText(MessageListActivity.this, R.string.messages_success, LENGTH_LONG).show();
         receivedMessageList = Util.makeMessageList(allMessageJSON);
-        messageAdapter = new MyAdapter(receivedMessageList, picasso);
+        messageAdapter = new MyAdapter(receivedMessageList, picasso, this);
         messageRecyclerView.setAdapter(messageAdapter);
     }
 }

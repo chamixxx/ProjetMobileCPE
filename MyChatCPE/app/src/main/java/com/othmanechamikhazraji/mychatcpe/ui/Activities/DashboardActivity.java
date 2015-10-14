@@ -1,4 +1,4 @@
-package com.othmanechamikhazraji.mychatcpe.Activities;
+package com.othmanechamikhazraji.mychatcpe.ui.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;

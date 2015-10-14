@@ -1,4 +1,4 @@
-package com.othmanechamikhazraji.mychatcpe.Activities;
+package com.othmanechamikhazraji.mychatcpe.ui.Activities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,9 +15,9 @@ import android.widget.Toast;
 
 import com.othmanechamikhazraji.mychatcpe.R;
 import com.othmanechamikhazraji.mychatcpe.Utils.DividerItemDecoration;
-import com.othmanechamikhazraji.mychatcpe.Utils.MyAdapter;
+import com.othmanechamikhazraji.mychatcpe.ui.Activities.adapter.MyAdapter;
 import com.othmanechamikhazraji.mychatcpe.Utils.Util;
-import com.othmanechamikhazraji.mychatcpe.model.ReceivedMessage;
+import com.othmanechamikhazraji.mychatcpe.model.MessageModel;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -54,7 +54,7 @@ public class MessageListActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private String allMessagesString = "";
     private JSONArray allMessageJSON = null;
-    private List<ReceivedMessage> receivedMessageList;
+    private List<MessageModel> receivedMessageList;
     private Picasso picasso;
 
     private PullMessageTask pullMessageTask;

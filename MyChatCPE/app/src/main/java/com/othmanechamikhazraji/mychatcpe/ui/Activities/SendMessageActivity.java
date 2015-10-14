@@ -2,9 +2,13 @@ package com.othmanechamikhazraji.mychatcpe.ui.Activities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +20,7 @@ import android.widget.Toast;
 
 import com.othmanechamikhazraji.mychatcpe.R;
 import com.othmanechamikhazraji.mychatcpe.Utils.Util;
+import com.othmanechamikhazraji.mychatcpe.model.Attachment;
 import com.othmanechamikhazraji.mychatcpe.model.ImageDrawable;
 import com.othmanechamikhazraji.mychatcpe.task.SendMessageTask;
 
@@ -39,12 +44,16 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
     private ProgressBar progressBar;
     private String bodyToSend;
     private LinearLayout imageLayout;
+    private List<Attachment> attachmentList;
+    private List<ImageDrawable> imageDrawableList;
+    private View.OnClickListener onImageClick;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_message);
 
+        attachmentList = new ArrayList<>();
         sendMessageBtn = (Button) findViewById(R.id.sendMsgBtn);
         messageEditText = (EditText) findViewById(R.id.messageText);
         image1UrlEditText = (EditText) findViewById(R.id.imageURL1);
@@ -71,9 +80,19 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
             }
         });
 
-        List<ImageDrawable> imageDrawableList = Util.getListImageDrawables(Util.getIDRessourcesAsIntegers());
+        imageDrawableList = Util.getListImageDrawables(Util.getIDRessourcesAsIntegers());
         imageLayout = (LinearLayout) findViewById(R.id.imageLayout);
+        onImageClick = new View.OnClickListener() {
+            public void onClick(View v) {
+                int tag = (int) v.getTag();
+                ImageDrawable imageCurrent = imageDrawableList.get(tag);
+                Bitmap bitmapImageCurrent = BitmapFactory.decodeResource(SendMessageActivity.this.getResources(), imageCurrent.getRessourceId());
+                Attachment attachment = new Attachment("PNG", Util.encodeImageBase64(bitmapImageCurrent,Bitmap.CompressFormat.PNG));
+                attachmentList.add(attachment);
+            }
+        };
         CreateImageView(imageDrawableList);
+
     }
 
     @Override
@@ -94,11 +113,17 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
         Toast.makeText(this, Util.getMessageContent(responseMessageJSON), LENGTH_LONG).show();
     }
 
+
+
     private void CreateImageView(List<ImageDrawable> imageDrawableList) {
+        int i = 0;
         for (ImageDrawable image : imageDrawableList) {
             ImageView imageView = new ImageView(SendMessageActivity.this);
             imageView.setImageResource(image.getRessourceId());
+            imageView.setTag(i);
+            imageView.setOnClickListener(onImageClick);
             imageLayout.addView(imageView);
+            i++;
         }
     }
     /*private JSONObject JsonObjectDrawable(Bitmap bitmap) {

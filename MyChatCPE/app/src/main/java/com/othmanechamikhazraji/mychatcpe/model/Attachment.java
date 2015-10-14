@@ -11,4 +11,12 @@ public class Attachment {
         this.mimeType = mimeType;
         this.data = data;
     }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public String getData() {
+        return data;
+    }
 }

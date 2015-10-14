@@ -8,14 +8,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.othmanechamikhazraji.mychatcpe.R;
 import com.othmanechamikhazraji.mychatcpe.Utils.Util;
+import com.othmanechamikhazraji.mychatcpe.model.ImageDrawable;
 import com.othmanechamikhazraji.mychatcpe.task.SendMessageTask;
 
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.widget.Toast.LENGTH_LONG;
 
@@ -28,11 +35,10 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
     private Button sendMessageBtn;
     private EditText messageEditText;
     private EditText image1UrlEditText;
-    private EditText image2UrlEditText;
-    private EditText image3UrlEditText;
     private SendMessageTask sendMessageTask;
     private ProgressBar progressBar;
     private String bodyToSend;
+    private LinearLayout imageLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +48,6 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
         sendMessageBtn = (Button) findViewById(R.id.sendMsgBtn);
         messageEditText = (EditText) findViewById(R.id.messageText);
         image1UrlEditText = (EditText) findViewById(R.id.imageURL1);
-        image2UrlEditText = (EditText) findViewById(R.id.imageURL2);
-        image3UrlEditText = (EditText) findViewById(R.id.imageURL3);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_message);
 
         SharedPreferences sharedPreferences = this.getSharedPreferences
@@ -56,8 +60,6 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
             public void onClick(View v) {
                 bodyToSend = messageEditText.getText().toString();
                 imageUrls[0] = "https://pbs.twimg.com/profile_images/631535425333518336/D-i_GqpT.jpg";
-                imageUrls[1] = "https://lunaextrema.files.wordpress.com/2011/11/gnfn.png";
-                imageUrls[2] = "https://upload.wikimedia.org/wikipedia/en/8/89/Brood_War_box_art_(StarCraft).jpg";
 
                 // Cancel previous task if it is still running
                 if (sendMessageTask != null && sendMessageTask.getStatus().equals(AsyncTask.Status.RUNNING)) {
@@ -68,6 +70,10 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
                 sendMessageTask.execute(usernameStr, passwordStr);
             }
         });
+
+        List<ImageDrawable> imageDrawableList = Util.getListImageDrawables(Util.getIDRessourcesAsIntegers());
+        imageLayout = (LinearLayout) findViewById(R.id.imageLayout);
+        CreateImageView(imageDrawableList);
     }
 
     @Override
@@ -86,6 +92,14 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
         }
         // Everything good!
         Toast.makeText(this, Util.getMessageContent(responseMessageJSON), LENGTH_LONG).show();
+    }
+
+    private void CreateImageView(List<ImageDrawable> imageDrawableList) {
+        for (ImageDrawable image : imageDrawableList) {
+            ImageView imageView = new ImageView(SendMessageActivity.this);
+            imageView.setImageResource(image.getRessourceId());
+            imageLayout.addView(imageView);
+        }
     }
     /*private JSONObject JsonObjectDrawable(Bitmap bitmap) {
         JSONObject jsonImageObject = new JSONObject();

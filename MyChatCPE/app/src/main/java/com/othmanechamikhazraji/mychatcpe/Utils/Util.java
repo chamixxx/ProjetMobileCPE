@@ -2,11 +2,14 @@ package com.othmanechamikhazraji.mychatcpe.Utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.util.Base64;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.othmanechamikhazraji.mychatcpe.R;
 import com.othmanechamikhazraji.mychatcpe.model.Attachment;
+import com.othmanechamikhazraji.mychatcpe.model.ImageDrawable;
 import com.othmanechamikhazraji.mychatcpe.model.MessageModel;
 import com.squareup.picasso.Picasso;
 
@@ -92,26 +95,25 @@ public class Util {
                                      String[] imageUrls, String bodyToSend,
                                            Context context, String TAG) {
         List<Attachment> attachments = new ArrayList<>();
-        for(int i =0; i<3; i++) {
-            if (imageUrls[i].equals("")) {
+        for (String imageUrl : imageUrls) {
+            if (imageUrl.equals("")) {
                 continue;
             }
             String mimeType;
             String data;
 
-            Bitmap bitmapImage = getBitmapFromURL(imageUrls[i], context, TAG);
+            Bitmap bitmapImage = getBitmapFromURL(imageUrl, context, TAG);
             if (bitmapImage == null) {
                 continue;
             }
-            Bitmap.CompressFormat format = Util.getImageFormat(imageUrls[i]);
+            Bitmap.CompressFormat format = Util.getImageFormat(imageUrl);
             data = Util.encodeImageBase64(bitmapImage, format);
-            if(format == Bitmap.CompressFormat.JPEG) {
+            if (format == Bitmap.CompressFormat.JPEG) {
                 mimeType = "image/jpeg";
-            }
-            else {
+            } else {
                 mimeType = "image/png";
             }
-            Attachment currentAttachment = new Attachment(mimeType,data);
+            Attachment currentAttachment = new Attachment(mimeType, data);
             attachments.add(currentAttachment);
         }
         MessageModel messageToSend = new MessageModel(uuidStr, usernameStr, bodyToSend, null, attachments);
@@ -130,5 +132,26 @@ public class Util {
             Log.w(TAG, "Exception occurred while downloading IMG URL to bitmap in: " + e.getMessage());
             return null;
         }
+    }
+
+
+    public static List<Integer> getIDRessourcesAsIntegers() {
+        List<Integer> rIDasIntegers = new ArrayList<>();
+        rIDasIntegers.add(R.drawable.icon0);
+        rIDasIntegers.add(R.drawable.icon1);
+        rIDasIntegers.add(R.drawable.icon2);
+        rIDasIntegers.add(R.drawable.icon3);
+        rIDasIntegers.add(R.drawable.icon4);
+        return rIDasIntegers;
+    }
+
+    public static List<ImageDrawable> getListImageDrawables(List<Integer> rIDasIntegers) {
+        List<ImageDrawable> imageDrawables = new ArrayList<>();
+        for(int id : rIDasIntegers)
+        {
+            ImageDrawable currentImage = new ImageDrawable("PNG",id);
+            imageDrawables.add(currentImage);
+        }
+        return imageDrawables;
     }
 }

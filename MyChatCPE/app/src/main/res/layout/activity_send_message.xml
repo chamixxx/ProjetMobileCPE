@@ -6,26 +6,11 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.othmanechamikhazraji.mychatcpe.ui.Activities.SendMessageActivity">
 
-    <TextView
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#598bc9"
-        android:gravity="center"
-        android:padding="20dp"
-        android:text="@string/app_name"
-        android:textSize="30sp" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/header"
-        android:orientation="vertical">
 
         <EditText
             android:id="@+id/messageText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="200dp"
             android:hint="write your message here!"
             />
 
@@ -36,28 +21,27 @@
             android:layout_below="@+id/messageText"
             android:hint="write your image URL here!"/>
 
-        <EditText
-            android:id="@+id/imageURL2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/imageURL1"
-            android:hint="write your image URL here!"/>
-
-        <EditText
-            android:id="@+id/imageURL3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/imageURL2"
-            android:hint="write your image URL here!"/>
-
 
         <Button
             android:id="@+id/sendMsgBtn"
-            android:layout_below="@+id/imageURL3"
+            android:layout_below="@+id/scrollView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/send"
             android:gravity="center"/>
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@+id/imageURL1">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageLayout">
+            </LinearLayout>
+        </ScrollView>
 
         <!-- ProgressBar drawn last to be on top-->
         <ProgressBar
@@ -66,7 +50,5 @@
             android:layout_height="100dp"
             android:layout_centerInParent="true"
             android:visibility="gone" />
-        
-    </RelativeLayout>
 
 </RelativeLayout>

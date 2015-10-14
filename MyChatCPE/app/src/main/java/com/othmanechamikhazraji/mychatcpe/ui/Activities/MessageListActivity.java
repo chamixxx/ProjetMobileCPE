@@ -8,16 +8,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
-import android.util.Log;
-import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.othmanechamikhazraji.mychatcpe.R;
 import com.othmanechamikhazraji.mychatcpe.Utils.DividerItemDecoration;
-import com.othmanechamikhazraji.mychatcpe.ui.Activities.adapter.MyAdapter;
 import com.othmanechamikhazraji.mychatcpe.Utils.Util;
 import com.othmanechamikhazraji.mychatcpe.model.MessageModel;
+import com.othmanechamikhazraji.mychatcpe.task.PullMessageTask;
+import com.othmanechamikhazraji.mychatcpe.ui.adapter.MyAdapter;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -27,23 +26,14 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.widget.Toast.LENGTH_LONG;
 
-public class MessageListActivity extends AppCompatActivity {
+public class MessageListActivity extends AppCompatActivity implements PullMessageTask.PullMessageFinishedListener {
 
-    private static final String TAG = MessageListActivity.class.getSimpleName();
-    private static final String API_BASE_URL = "http://training.loicortola.com/chat-rest/2.0";
     public static final String EXTRA_LOGIN = "ext_login";
     public static final String EXTRA_PASSWORD = "ext_password";
 
@@ -52,8 +42,6 @@ public class MessageListActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager messageLayoutManager;
 
     private ProgressBar progressBar;
-    private String allMessagesString = "";
-    private JSONArray allMessageJSON = null;
     private List<MessageModel> receivedMessageList;
     private Picasso picasso;
 
@@ -100,9 +88,8 @@ public class MessageListActivity extends AppCompatActivity {
             pullMessageTask.cancel(true);
         }
         // Launch pullMessageTask Task
-        pullMessageTask = new PullMessageTask();
+        pullMessageTask = new PullMessageTask(progressBar, this);
         pullMessageTask.execute(usernameStr, passwordStr);
-
     }
 
     @Override
@@ -113,96 +100,16 @@ public class MessageListActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    /**
-     * pullMessageTask: AsyncTask to pull messages from the server authentication.
-     */
-    private class PullMessageTask extends AsyncTask<String, Void, Boolean> {
-
-        @Override
-        protected void onPreExecute() {
-            // Here, show progress bar
-            progressBar.setVisibility(View.VISIBLE);
+    @Override
+    public void onPostExecute(Boolean success, JSONArray allMessageJSON) {
+        // No response from the server entered
+        if (!success) {
+            return;
         }
-
-        /**
-         * @param params [login, password]
-         * @return true if login succeeded, false otherwise
-         */
-        @Override
-        protected Boolean doInBackground(String... params) {
-            String username = params[0];
-            String password = params[1];
-
-            String credentials = username + ":" + password;
-            String base64EncodedCredentials = Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
-
-            int responseCode = 0;
-
-            StringBuilder result = null;
-            String resultString = null;
-
-            // Webservice URL
-            String urlString = API_BASE_URL + "/messages?&limit=100&offset=0";
-            URL url = null;
-
-            try {
-                url = new URL(urlString);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            HttpURLConnection urlConnection = null;
-
-            try {
-                urlConnection = (HttpURLConnection) (url != null ? url.openConnection() : null);
-            } catch (IOException e) {
-                Log.w(TAG, "Exception occurred while getting messages in: " + e.getMessage());
-            }
-            if (urlConnection != null) {
-                urlConnection.setReadTimeout(10000 /* milliseconds */);
-                urlConnection.setConnectTimeout(15000 /* milliseconds */);
-                try {
-                    urlConnection.setRequestMethod("GET");
-                    urlConnection.setRequestProperty("Authorization", "Basic " + base64EncodedCredentials);
-                    urlConnection.setDoInput(true);
-                    urlConnection.connect();
-                    responseCode = urlConnection.getResponseCode();
-
-                    InputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                    result = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        result.append(line);
-                    }
-                } catch (IOException e) {
-                    Log.w(TAG, "Exception occurred while getting messages in: " + e.getMessage());
-                } finally {
-                    resultString = result != null ? result.toString() : null;
-                    urlConnection.disconnect();
-                }
-            }
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                allMessagesString = resultString;
-                allMessageJSON = Util.stringToJsonArray(allMessagesString);
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean success) {
-            // Here, hide progress bar and proceed to login if OK.
-            progressBar.setVisibility(View.GONE);
-
-            // No response from the server entered
-            if (!success) {
-                return;
-            }
-            // Everything good!
-            Toast.makeText(MessageListActivity.this, R.string.messages_success, LENGTH_LONG).show();
-            receivedMessageList = Util.makeMessageList(allMessageJSON);
-            messageAdapter = new MyAdapter(receivedMessageList, picasso);
-            messageRecyclerView.setAdapter(messageAdapter);
-        }
+        // Everything good!
+        Toast.makeText(MessageListActivity.this, R.string.messages_success, LENGTH_LONG).show();
+        receivedMessageList = Util.makeMessageList(allMessageJSON);
+        messageAdapter = new MyAdapter(receivedMessageList, picasso);
+        messageRecyclerView.setAdapter(messageAdapter);
     }
 }

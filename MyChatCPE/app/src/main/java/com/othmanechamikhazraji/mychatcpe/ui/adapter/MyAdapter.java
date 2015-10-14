@@ -1,4 +1,4 @@
-package com.othmanechamikhazraji.mychatcpe.ui.Activities.adapter;
+package com.othmanechamikhazraji.mychatcpe.ui.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

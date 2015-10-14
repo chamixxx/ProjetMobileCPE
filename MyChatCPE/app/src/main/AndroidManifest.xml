@@ -36,7 +36,11 @@
         </activity>
         <activity
             android:name=".ui.Activities.SendMessageActivity"
-            android:label="@string/title_activity_send_message" >
+            android:label="@string/title_activity_send_message"
+            android:parentActivityName=".ui.Activities.DashboardActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.Activities.DashboardActivity" />
         </activity>
     </application>
 

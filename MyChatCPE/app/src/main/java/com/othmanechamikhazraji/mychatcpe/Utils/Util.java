@@ -92,11 +92,12 @@ public class Util {
     }
 
     public static String createJSONMessage(String usernameStr, String uuidStr,
-                                     String[] imageUrls, String bodyToSend,
+                                     String[] imageUrls, String bodyToSend, List<Attachment> imagesDrawable,
                                            Context context, String TAG) {
         List<Attachment> attachments = new ArrayList<>();
+        attachments = imagesDrawable;
         for (String imageUrl : imageUrls) {
-            if (imageUrl.equals("")) {
+            if (imageUrl == null || imageUrl.equals("")) {
                 continue;
             }
             String mimeType;

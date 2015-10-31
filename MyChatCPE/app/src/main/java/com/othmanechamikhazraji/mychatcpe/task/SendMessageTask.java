@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.othmanechamikhazraji.mychatcpe.Utils.Util;
+import com.othmanechamikhazraji.mychatcpe.model.Attachment;
 import com.othmanechamikhazraji.mychatcpe.ui.Activities.MessageListActivity;
 
 import org.json.JSONObject;
@@ -21,6 +22,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 /**
  * Created by othmanechamikhazraji on 14/10/15.
@@ -39,13 +41,15 @@ public class SendMessageTask extends AsyncTask<String, Void, Boolean> {
     private String bodyToSend;
     private Context context;
     private JSONObject responseMessageJSON;
+    private List<Attachment> imageToSend;
     private SendMessageTaskFinishedListener sendMessageTaskFinishedListener;
 
-    public SendMessageTask(String[] imageUrls, ProgressBar progressBar, String bodyToSend, Context context) {
+    public SendMessageTask(String[] imageUrls, ProgressBar progressBar, String bodyToSend, List<Attachment> imageToSend, Context context) {
         this.imageUrls = imageUrls;
         this.progressBar = progressBar;
         this.bodyToSend = bodyToSend;
         this.context = context;
+        this.imageToSend = imageToSend;
         this.sendMessageTaskFinishedListener = (SendMessageTaskFinishedListener) context;
     }
 
@@ -99,7 +103,7 @@ public class SendMessageTask extends AsyncTask<String, Void, Boolean> {
                 urlConnection.connect();
 
                 String messageJson = Util.createJSONMessage(username, uuidStr, imageUrls,
-                        bodyToSend, context, TAG);
+                        bodyToSend, imageToSend, context, TAG);
                 if (messageJson == null) {
                     return false;
                 }

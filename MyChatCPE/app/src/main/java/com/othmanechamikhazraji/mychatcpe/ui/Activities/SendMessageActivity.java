@@ -68,14 +68,13 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
             @Override
             public void onClick(View v) {
                 bodyToSend = messageEditText.getText().toString();
-                imageUrls[0] = "https://pbs.twimg.com/profile_images/631535425333518336/D-i_GqpT.jpg";
 
                 // Cancel previous task if it is still running
                 if (sendMessageTask != null && sendMessageTask.getStatus().equals(AsyncTask.Status.RUNNING)) {
                     sendMessageTask.cancel(true);
                 }
                 // Launch sendMessageTask
-                sendMessageTask = new SendMessageTask(imageUrls, progressBar, bodyToSend, SendMessageActivity.this);
+                sendMessageTask = new SendMessageTask(imageUrls, progressBar, bodyToSend, attachmentList, SendMessageActivity.this);
                 sendMessageTask.execute(usernameStr, passwordStr);
             }
         });

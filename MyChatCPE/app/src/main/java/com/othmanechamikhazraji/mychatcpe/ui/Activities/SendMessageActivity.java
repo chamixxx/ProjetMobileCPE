@@ -68,6 +68,7 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
             @Override
             public void onClick(View v) {
                 bodyToSend = messageEditText.getText().toString();
+                imageUrls[0] = "http://mathiasfranck.free.fr/images//point.jpg";
 
                 // Cancel previous task if it is still running
                 if (sendMessageTask != null && sendMessageTask.getStatus().equals(AsyncTask.Status.RUNNING)) {
@@ -86,7 +87,7 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
                 int tag = (int) v.getTag();
                 ImageDrawable imageCurrent = imageDrawableList.get(tag);
                 Bitmap bitmapImageCurrent = BitmapFactory.decodeResource(SendMessageActivity.this.getResources(), imageCurrent.getRessourceId());
-                Attachment attachment = new Attachment("PNG", Util.encodeImageBase64(bitmapImageCurrent,Bitmap.CompressFormat.PNG));
+                Attachment attachment = new Attachment("image/png", Util.encodeImageBase64(bitmapImageCurrent,Bitmap.CompressFormat.PNG));
                 attachmentList.add(attachment);
             }
         };

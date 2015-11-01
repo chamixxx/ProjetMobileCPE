@@ -9,6 +9,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.othmanechamikhazraji.mychatcpe.ui.Activities.MessageListActivity">
 
+    <ImageView
+        android:transitionName="logoTransition"
+        android:layout_width="600dp"
+        android:layout_height="600dp"
+        android:layout_marginBottom="100dp"
+        android:src="@drawable/messenger"
+        android:alpha="0.3"/>
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"

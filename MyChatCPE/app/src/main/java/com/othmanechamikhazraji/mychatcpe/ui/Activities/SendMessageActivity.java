@@ -38,6 +38,7 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
 
     private String[] imageUrls = new String[3];
     private ActionProcessButton sendMessageBtn;
+    private Button addUrlBtn;
     private EditText messageEditText;
     private EditText image1UrlEditText;
     private SendMessageTask sendMessageTask;
@@ -57,6 +58,7 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
         sendMessageBtn = (ActionProcessButton) findViewById(R.id.sendMsgBtn);
         sendMessageBtn.setMode(ActionProcessButton.Mode.ENDLESS);
 
+        addUrlBtn = (Button) findViewById(R.id.addUrl);
         messageEditText = (EditText) findViewById(R.id.messageText);
         image1UrlEditText = (EditText) findViewById(R.id.imageURL1);
 
@@ -65,11 +67,18 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
         final String usernameStr = sharedPreferences.getString(EXTRA_LOGIN, "");
         final String passwordStr = sharedPreferences.getString(EXTRA_PASSWORD, "");
 
+        addUrlBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                image1UrlEditText.setText("http://mathiasfranck.free.fr/images//point.jpg");
+            }
+        });
+
         sendMessageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 bodyToSend = messageEditText.getText().toString();
-                imageUrls[0] = "http://mathiasfranck.free.fr/images//point.jpg";
+                imageUrls[0] = image1UrlEditText.getText().toString();
 
                 // Cancel previous task if it is still running
                 if (sendMessageTask != null && sendMessageTask.getStatus().equals(AsyncTask.Status.RUNNING)) {
@@ -120,10 +129,8 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
 
             }
         };
-
         messageEditText.addTextChangedListener(textWatcher);
         image1UrlEditText.addTextChangedListener(textWatcher);
-
     }
 
     @Override

@@ -21,6 +21,8 @@
     <string name="title_activity_send_message">Envoyer un message</string>
     <string name="signIn">Sign_in</string>
     <string name="imageUrl">write your image URL here!</string>
+    <string name="urltest">URL Test</string>
+    <string name="writeMessage">write your message here!</string>
 
 
 </resources>

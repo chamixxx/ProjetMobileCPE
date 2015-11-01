@@ -1,46 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.othmanechamikhazraji.mychatcpe.ui.Activities.DashboardActivity">
 
-
-
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/messagesBtn"
-            android:text="@string/messages"
-            android:layout_above="@+id/sendBtn"
-
-            />
-
-        <ImageView
-            android:id="@+id/logo2"
-            android:transitionName="logoTransition"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="100dp"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@drawable/messenger" />
-
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/sendBtn"
-            android:text="@string/send"
-            android:layout_centerInParent="true"
-
-            />
-
-
-
-
-
-
+    <ImageView
+        android:id="@+id/logo2"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100dp"
+        android:src="@drawable/messenger"
+        android:transitionName="logoTransition"
+        />
+    <Button
+        android:layout_marginTop="20dp"
+        android:id="@+id/messagesBtn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/messages"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:background="@color/colorPrimary"
+        android:layout_centerInParent="true"
+        />
+    <Button
+        android:layout_below="@+id/messagesBtn"
+        android:layout_marginTop="20dp"
+        android:id="@+id/sendBtn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/send"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:background="@color/colorPrimary"
+        />
 </RelativeLayout>
 
 

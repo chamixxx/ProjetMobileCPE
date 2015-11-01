@@ -4,9 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
-import android.view.View;
-import android.widget.ProgressBar;
 
+import com.dd.processbutton.iml.ActionProcessButton;
 import com.othmanechamikhazraji.mychatcpe.Utils.Util;
 import com.othmanechamikhazraji.mychatcpe.model.Attachment;
 import com.othmanechamikhazraji.mychatcpe.ui.Activities.MessageListActivity;
@@ -37,17 +36,17 @@ public class SendMessageTask extends AsyncTask<String, Void, Boolean> {
     public static final String API_BASE_URL = "http://training.loicortola.com/chat-rest/2.0";
     private static final String TAG = MessageListActivity.class.getSimpleName();
     private String[] imageUrls;
-    private ProgressBar progressBar;
     private String bodyToSend;
+    private ActionProcessButton sendMessageBtn;
     private Context context;
     private JSONObject responseMessageJSON;
     private List<Attachment> imageToSend;
     private SendMessageTaskFinishedListener sendMessageTaskFinishedListener;
 
-    public SendMessageTask(String[] imageUrls, ProgressBar progressBar, String bodyToSend, List<Attachment> imageToSend, Context context) {
+    public SendMessageTask(String[] imageUrls, String bodyToSend, List<Attachment> imageToSend, ActionProcessButton sendMessageBtn, Context context) {
         this.imageUrls = imageUrls;
-        this.progressBar = progressBar;
         this.bodyToSend = bodyToSend;
+        this.sendMessageBtn = sendMessageBtn;
         this.context = context;
         this.imageToSend = imageToSend;
         this.sendMessageTaskFinishedListener = (SendMessageTaskFinishedListener) context;
@@ -55,8 +54,7 @@ public class SendMessageTask extends AsyncTask<String, Void, Boolean> {
 
     @Override
     protected void onPreExecute() {
-        // Here, show progress bar
-        progressBar.setVisibility(View.VISIBLE);
+        sendMessageBtn.setProgress(1);
     }
 
     @Override
@@ -131,8 +129,7 @@ public class SendMessageTask extends AsyncTask<String, Void, Boolean> {
         }
 
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            String responseMessageString = resultString;
-            responseMessageJSON = Util.stringToJson(responseMessageString);
+            responseMessageJSON = Util.stringToJson(resultString);
             return true;
         }
         String responseMessageString = resultString;
@@ -143,7 +140,6 @@ public class SendMessageTask extends AsyncTask<String, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean success) {
         // Here, hide progress bar and proceed to login if OK.
-        progressBar.setVisibility(View.GONE);
         sendMessageTaskFinishedListener.onPostExecute(success, responseMessageJSON);
     }
 }

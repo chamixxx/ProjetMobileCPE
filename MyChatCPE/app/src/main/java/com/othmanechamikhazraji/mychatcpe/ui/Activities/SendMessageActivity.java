@@ -4,20 +4,17 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.dd.processbutton.iml.ActionProcessButton;
 import com.othmanechamikhazraji.mychatcpe.R;
 import com.othmanechamikhazraji.mychatcpe.Utils.Util;
 import com.othmanechamikhazraji.mychatcpe.model.Attachment;
@@ -37,13 +34,13 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
     public static final String EXTRA_PASSWORD = "ext_password";
 
     private String[] imageUrls = new String[3];
-    private Button sendMessageBtn;
+    private ActionProcessButton sendMessageBtn;
     private EditText messageEditText;
     private EditText image1UrlEditText;
     private SendMessageTask sendMessageTask;
-    private ProgressBar progressBar;
     private String bodyToSend;
     private LinearLayout imageLayout;
+    private LinearLayout previewLayout;
     private List<Attachment> attachmentList;
     private List<ImageDrawable> imageDrawableList;
     private View.OnClickListener onImageClick;
@@ -54,10 +51,11 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
         setContentView(R.layout.activity_send_message);
 
         attachmentList = new ArrayList<>();
-        sendMessageBtn = (Button) findViewById(R.id.sendMsgBtn);
+        sendMessageBtn = (ActionProcessButton) findViewById(R.id.sendMsgBtn);
+        sendMessageBtn.setMode(ActionProcessButton.Mode.ENDLESS);
+
         messageEditText = (EditText) findViewById(R.id.messageText);
         image1UrlEditText = (EditText) findViewById(R.id.imageURL1);
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar_message);
 
         SharedPreferences sharedPreferences = this.getSharedPreferences
                 ("authentication", Context.MODE_PRIVATE);
@@ -74,14 +72,18 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
                 if (sendMessageTask != null && sendMessageTask.getStatus().equals(AsyncTask.Status.RUNNING)) {
                     sendMessageTask.cancel(true);
                 }
+                sendMessageBtn.setEnabled(false);
+                messageEditText.setEnabled(false);
+                image1UrlEditText.setEnabled(false);
                 // Launch sendMessageTask
-                sendMessageTask = new SendMessageTask(imageUrls, progressBar, bodyToSend, attachmentList, SendMessageActivity.this);
+                sendMessageTask = new SendMessageTask(imageUrls, bodyToSend, attachmentList, sendMessageBtn, SendMessageActivity.this);
                 sendMessageTask.execute(usernameStr, passwordStr);
             }
         });
 
         imageDrawableList = Util.getListImageDrawables(Util.getIDRessourcesAsIntegers());
         imageLayout = (LinearLayout) findViewById(R.id.imageLayout);
+        previewLayout = (LinearLayout) findViewById(R.id.previewLayout);
         onImageClick = new View.OnClickListener() {
             public void onClick(View v) {
                 int tag = (int) v.getTag();
@@ -89,9 +91,15 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
                 Bitmap bitmapImageCurrent = BitmapFactory.decodeResource(SendMessageActivity.this.getResources(), imageCurrent.getRessourceId());
                 Attachment attachment = new Attachment("image/png", Util.encodeImageBase64(bitmapImageCurrent,Bitmap.CompressFormat.PNG));
                 attachmentList.add(attachment);
+
+                imageLayout.removeView(v);
+                v.getLayoutParams().height = 50;
+                v.getLayoutParams().width = 50;
+                v.requestLayout();
+                previewLayout.addView(v);
             }
         };
-        CreateImageView(imageDrawableList);
+        displayStickers(imageDrawableList);
 
     }
 
@@ -105,17 +113,22 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
 
     @Override
     public void onPostExecute(Boolean success, JSONObject responseMessageJSON) {
+        sendMessageBtn.setEnabled(true);
+        messageEditText.setEnabled(true);
+        image1UrlEditText.setEnabled(true);
+
         if (!success) {
+            sendMessageBtn.setProgress(-1);
             Toast.makeText(this, Util.getMessageContent(responseMessageJSON), LENGTH_LONG).show();
             return;
         }
         // Everything good!
-        Toast.makeText(this, Util.getMessageContent(responseMessageJSON), LENGTH_LONG).show();
+        sendMessageBtn.setProgress(100);
     }
 
 
 
-    private void CreateImageView(List<ImageDrawable> imageDrawableList) {
+    private void displayStickers (List<ImageDrawable> imageDrawableList) {
         int i = 0;
         for (ImageDrawable image : imageDrawableList) {
             ImageView imageView = new ImageView(SendMessageActivity.this);
@@ -123,22 +136,10 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
             imageView.setTag(i);
             imageView.setOnClickListener(onImageClick);
             imageLayout.addView(imageView);
+            imageView.getLayoutParams().height = 200;
+            imageView.getLayoutParams().width = 200;
+            imageView.requestLayout();
             i++;
         }
     }
-    /*private JSONObject JsonObjectDrawable(Bitmap bitmap) {
-        JSONObject jsonImageObject = new JSONObject();
-        Bitmap.CompressFormat format = Bitmap.CompressFormat.PNG;
-        String encodedImage = Util.encodeImageBase64(bitmap, format);
-        try {
-            jsonImageObject.put("mimeType", "image/png");
-            jsonImageObject.put("data", encodedImage);
-            return jsonImageObject;
-        }
-        catch (JSONException e) {
-            Log.w(TAG, "Exception occurred while transfering IMG URL to bitmap in: " + e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
-    }*/
 }

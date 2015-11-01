@@ -7,8 +7,6 @@ package com.othmanechamikhazraji.mychatcpe.task;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
-import android.view.View;
-import android.widget.ProgressBar;
 
 import com.dd.processbutton.iml.ActionProcessButton;
 import com.othmanechamikhazraji.mychatcpe.ui.Activities.MainActivity;

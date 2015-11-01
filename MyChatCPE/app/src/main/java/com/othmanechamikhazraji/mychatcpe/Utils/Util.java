@@ -29,7 +29,9 @@ import java.util.UUID;
 public class Util {
     public static JSONObject stringToJson (String stringToConvert) {
         try {
-            return new JSONObject(stringToConvert);
+            if (stringToConvert != null) {
+                return new JSONObject(stringToConvert);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -72,6 +74,10 @@ public class Util {
         }
         catch (JSONException e) {
             e.printStackTrace();
+            return "";
+        }
+        catch (NullPointerException npe) {
+            npe.printStackTrace();
             return "";
         }
     }
@@ -121,6 +127,7 @@ public class Util {
         Gson gson = new Gson();
         String messageJsonToSend = gson.toJson(messageToSend);
         Log.d("JSON DEBUG", messageJsonToSend);
+        System.out.print(messageJsonToSend);
         return messageJsonToSend;
     }
 
@@ -143,6 +150,9 @@ public class Util {
         rIDasIntegers.add(R.drawable.icon2);
         rIDasIntegers.add(R.drawable.icon3);
         rIDasIntegers.add(R.drawable.icon4);
+        rIDasIntegers.add(R.drawable.icon5);
+        rIDasIntegers.add(R.drawable.icon6);
+        rIDasIntegers.add(R.drawable.icon7);
         return rIDasIntegers;
     }
 

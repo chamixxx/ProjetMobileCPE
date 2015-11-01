@@ -7,6 +7,9 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -101,6 +104,26 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
         };
         displayStickers(imageDrawableList);
 
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                sendMessageBtn.setProgress(0);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+
+        messageEditText.addTextChangedListener(textWatcher);
+        image1UrlEditText.addTextChangedListener(textWatcher);
+
     }
 
     @Override
@@ -109,6 +132,17 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
             sendMessageTask.cancel(true);
         }
         super.onPause();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                supportFinishAfterTransition();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

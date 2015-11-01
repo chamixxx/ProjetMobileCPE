@@ -28,6 +28,8 @@
     </LinearLayout>
 
     <ImageView
+        android:id="@+id/logo"
+        android:transitionName="logoTransition"
         android:layout_above="@+id/footer"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="100dp"

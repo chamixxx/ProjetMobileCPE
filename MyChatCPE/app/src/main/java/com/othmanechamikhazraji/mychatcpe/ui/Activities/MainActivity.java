@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.dd.processbutton.iml.ActionProcessButton;
 import com.othmanechamikhazraji.mychatcpe.R;
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements LoginTaskFinished
     private EditText password;
     private ActionProcessButton submitBtn;
     private LoginTask loginTask;
+    private ImageView logoView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +39,15 @@ public class MainActivity extends AppCompatActivity implements LoginTaskFinished
         submitBtn.setMode(ActionProcessButton.Mode.ENDLESS);
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
+        logoView = (ImageView) findViewById(R.id.logo);
 
-        username.addTextChangedListener(new TextWatcher() {
+
+        TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 submitBtn.setProgress(0);
@@ -51,22 +57,9 @@ public class MainActivity extends AppCompatActivity implements LoginTaskFinished
             public void afterTextChanged(Editable s) {
 
             }
-        });
-         password.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                submitBtn.setProgress(0);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
+        };
+        username.addTextChangedListener(textWatcher);
+        password.addTextChangedListener(textWatcher);
 
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,6 +89,15 @@ public class MainActivity extends AppCompatActivity implements LoginTaskFinished
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        submitBtn.setProgress(0);
+        submitBtn.setEnabled(true);
+        username.setEnabled(true);
+        password.setEnabled(true);
+    }
+
+    @Override
     public void onPostExecute(Boolean success) {
         // Wrong login entered
         if (!success) {
@@ -117,6 +119,8 @@ public class MainActivity extends AppCompatActivity implements LoginTaskFinished
 
         // Everything good!
         Intent intent = new Intent(this, DashboardActivity.class);
-        startActivity(intent);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, logoView, "logoTransition");
+        startActivity(intent, options.toBundle());
     }
 }

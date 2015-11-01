@@ -1,32 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:background="@drawable/back3"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp">
+
 
     <TextView
         android:id="@+id/list_item_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="10dip"
+        android:drawableLeft="@drawable/profileicon"
+        android:drawablePadding="6dp"
         android:paddingBottom="10dip"
-        android:textSize="25sp"
-        android:textColor="@color/colorPrimaryDark">
-    </TextView>
+        android:paddingTop="10dip"
+        android:textColor="#000000"
+        android:textSize="20sp"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/list_item_login"
+        android:background="@drawable/back2"
+        android:layout_margin="3dp"
+        >
     <TextView
         android:id="@+id/list_item_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
         android:gravity="center"
-        android:layout_below="@id/list_item_login"/>
+        android:textSize="20sp" />
+
     <LinearLayout
-        android:orientation="horizontal"
         android:id="@+id/list_item_images"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:layout_below="@id/list_item_message"
-        android:contentDescription="@string/contentInfoImages"
         android:layout_centerHorizontal="true"
-        android:visibility="gone"/>
+        android:contentDescription="@string/contentInfoImages"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:paddingBottom="4dp"/>
+    </RelativeLayout>
 
 </RelativeLayout>

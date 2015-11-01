@@ -25,6 +25,7 @@ public class MyAdapter extends RecyclerView.Adapter {
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
+        private ImageView profilePic;
         private TextView login;
         private TextView message;
         private LinearLayout images;

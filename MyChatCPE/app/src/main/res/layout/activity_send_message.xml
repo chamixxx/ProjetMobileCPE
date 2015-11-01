@@ -14,7 +14,7 @@
         android:layout_width="600dp"
         android:layout_height="600dp"
         android:layout_marginBottom="100dp"
-        android:alpha="0.3"
+        android:alpha="0.1"
         android:src="@drawable/messenger"
         android:transitionName="logoTransition" />
 
@@ -55,22 +55,29 @@
         android:orientation="horizontal"/>
     </RelativeLayout>
 
-    <HorizontalScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
+    <TextView
+        android:id="@+id/stickText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sticker"
         android:layout_below="@+id/editable"
         android:layout_marginTop="50dp"
-        android:background="@drawable/back2">
+        android:textSize="20sp"
+        />
 
+    <HorizontalScrollView
+        android:id="@+id/scrollView"
+        android:layout_below="@+id/stickText"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:padding="3dp"
+        android:background="@drawable/back2">
         <LinearLayout
+            android:layout_marginTop="10dp"
             android:id="@+id/imageLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="10dp"/>
+            android:orientation="horizontal" />
     </HorizontalScrollView>
 
 

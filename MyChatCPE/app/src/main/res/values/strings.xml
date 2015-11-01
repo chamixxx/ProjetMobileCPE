@@ -23,6 +23,7 @@
     <string name="imageUrl">write your image URL here!</string>
     <string name="urltest">URL Test</string>
     <string name="writeMessage">write your message here!</string>
+    <string name="sticker">  Stickers  </string>
 
 
 </resources>

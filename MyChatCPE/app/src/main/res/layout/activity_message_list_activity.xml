@@ -15,7 +15,7 @@
         android:layout_height="600dp"
         android:layout_marginBottom="100dp"
         android:src="@drawable/messenger"
-        android:alpha="0.3"/>
+        android:alpha="0.1"/>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"

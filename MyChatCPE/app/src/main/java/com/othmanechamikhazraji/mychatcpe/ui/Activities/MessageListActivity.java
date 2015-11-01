@@ -97,7 +97,7 @@ public class MessageListActivity extends AppCompatActivity implements PullMessag
         messageRecyclerView.setLayoutManager(messageLayoutManager);
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL_LIST);
-        messageRecyclerView.addItemDecoration(itemDecoration);
+        //messageRecyclerView.addItemDecoration(itemDecoration);
 
         // Cancel previous task if it is still running
         if (pullMessageTask != null && pullMessageTask.getStatus().equals(AsyncTask.Status.RUNNING)) {

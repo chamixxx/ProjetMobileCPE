@@ -2,7 +2,6 @@ package com.othmanechamikhazraji.mychatcpe.Utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.util.Base64;
 import android.util.Log;
 

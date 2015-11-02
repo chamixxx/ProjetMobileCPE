@@ -1,8 +1,5 @@
 package com.othmanechamikhazraji.mychatcpe.model;
 
-import android.graphics.Bitmap;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**

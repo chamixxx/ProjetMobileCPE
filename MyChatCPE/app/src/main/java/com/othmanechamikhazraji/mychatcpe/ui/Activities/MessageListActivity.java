@@ -14,7 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.othmanechamikhazraji.mychatcpe.R;
-import com.othmanechamikhazraji.mychatcpe.Utils.DividerItemDecoration;
 import com.othmanechamikhazraji.mychatcpe.Utils.Util;
 import com.othmanechamikhazraji.mychatcpe.model.MessageModel;
 import com.othmanechamikhazraji.mychatcpe.task.PullMessageTask;
@@ -95,9 +94,7 @@ public class MessageListActivity extends AppCompatActivity implements PullMessag
         messageRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         messageLayoutManager = new LinearLayoutManager(this);
         messageRecyclerView.setLayoutManager(messageLayoutManager);
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this,
-                DividerItemDecoration.VERTICAL_LIST);
-        //messageRecyclerView.addItemDecoration(itemDecoration);
+
 
         // Cancel previous task if it is still running
         if (pullMessageTask != null && pullMessageTask.getStatus().equals(AsyncTask.Status.RUNNING)) {

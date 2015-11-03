@@ -38,7 +38,6 @@ public class PullMessageTask extends AsyncTask<String, Void, Boolean> {
         void onPostExecute(Boolean success, JSONArray allMessageJSON);
     }
 
-    private ProgressBar progressBar;
     private static final String TAG = MessageListActivity.class.getSimpleName();
     private static final String API_BASE_URL = "http://training.loicortola.com/chat-rest/2.0";
     private String allMessagesString;
@@ -46,15 +45,13 @@ public class PullMessageTask extends AsyncTask<String, Void, Boolean> {
     private PullMessageFinishedListener pullMessageFinishedListener;
 
 
-    public PullMessageTask(ProgressBar progressBar, PullMessageFinishedListener pullMessageFinishedListener) {
-        this.progressBar = progressBar;
+    public PullMessageTask(PullMessageFinishedListener pullMessageFinishedListener) {
         this.pullMessageFinishedListener = pullMessageFinishedListener;
     }
 
     @Override
     protected void onPreExecute() {
         // Here, show progress bar
-        progressBar.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -125,7 +122,6 @@ public class PullMessageTask extends AsyncTask<String, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean success) {
         // Here, hide progress bar and proceed to login if OK.
-        progressBar.setVisibility(View.GONE);
         pullMessageFinishedListener.onPostExecute(success, allMessageJSON);
     }
 }

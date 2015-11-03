@@ -5,12 +5,13 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.view.MenuItem;
-import android.widget.ProgressBar;
+import android.view.View;
 import android.widget.Toast;
 
 import com.othmanechamikhazraji.mychatcpe.R;
@@ -43,8 +44,8 @@ public class MessageListActivity extends AppCompatActivity implements PullMessag
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView.Adapter messageAdapter;
     private RecyclerView.LayoutManager messageLayoutManager;
+    private ActionBar actionBar;
 
-    private ProgressBar progressBar;
     private List<MessageModel> receivedMessageList;
     private Picasso picasso;
     private String login;
@@ -55,7 +56,6 @@ public class MessageListActivity extends AppCompatActivity implements PullMessag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_list_activity);
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar_message);
 
         SharedPreferences sharedPreferences = this.getSharedPreferences
                 ("authentication", Context.MODE_PRIVATE);
@@ -88,7 +88,7 @@ public class MessageListActivity extends AppCompatActivity implements PullMessag
                 if (pullMessageTask != null && pullMessageTask.getStatus().equals(AsyncTask.Status.RUNNING)) {
                     pullMessageTask.cancel(true);
                 }
-                pullMessageTask = new PullMessageTask(progressBar, MessageListActivity.this);
+                pullMessageTask = new PullMessageTask(MessageListActivity.this);
                 pullMessageTask.execute(usernameStr, passwordStr);
             }
         });
@@ -103,7 +103,7 @@ public class MessageListActivity extends AppCompatActivity implements PullMessag
             pullMessageTask.cancel(true);
         }
         // Launch pullMessageTask Task
-        pullMessageTask = new PullMessageTask(progressBar, this);
+        pullMessageTask = new PullMessageTask(this);
         pullMessageTask.execute(usernameStr, passwordStr);
     }
 

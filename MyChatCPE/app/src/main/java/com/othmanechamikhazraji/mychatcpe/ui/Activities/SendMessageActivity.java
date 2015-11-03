@@ -2,6 +2,7 @@ package com.othmanechamikhazraji.mychatcpe.ui.Activities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -48,11 +50,15 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
     private List<Attachment> attachmentList;
     private List<ImageDrawable> imageDrawableList;
     private View.OnClickListener onImageClick;
+    private float px;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_message);
+
+        Resources r = getResources();
+        px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, r.getDisplayMetrics());
 
         attachmentList = new ArrayList<>();
         sendMessageBtn = (ActionProcessButton) findViewById(R.id.sendMsgBtn);
@@ -105,8 +111,8 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
                 attachmentList.add(attachment);
 
                 imageLayout.removeView(v);
-                v.getLayoutParams().height = 50;
-                v.getLayoutParams().width = 50;
+                v.getLayoutParams().height = (int) (30*px);
+                v.getLayoutParams().width = (int) (30*px);
                 v.requestLayout();
                 previewLayout.addView(v);
             }
@@ -177,8 +183,8 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
             imageView.setTag(i);
             imageView.setOnClickListener(onImageClick);
             imageLayout.addView(imageView);
-            imageView.getLayoutParams().height = 200;
-            imageView.getLayoutParams().width = 200;
+            imageView.getLayoutParams().height = (int) (70*px);
+            imageView.getLayoutParams().width = (int) (70*px);
             imageView.requestLayout();
             i++;
         }

@@ -72,7 +72,7 @@ public class MessageListActivity extends AppCompatActivity implements PullMessag
             @Override
             public void onClick(final View v) {
                 fullScreen.clearAnimation();
-                final TranslateAnimation slide = new TranslateAnimation(0, 0, 0,px*600 );
+                final TranslateAnimation slide = new TranslateAnimation(0, 0, 0,px*550 );
                 slide.setDuration(1000);
                 slide.setFillAfter(true);
                 slide.setAnimationListener(new Animation.AnimationListener() {

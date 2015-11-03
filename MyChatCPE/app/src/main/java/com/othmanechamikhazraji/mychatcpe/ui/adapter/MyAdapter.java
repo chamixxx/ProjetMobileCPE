@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
@@ -99,23 +100,35 @@ public class MyAdapter extends RecyclerView.Adapter {
             if (values.get(position).getImages().size() != 0) {
                 for (int j=0; j<values.get(position).getImages().size(); j++) {
                     ImageView imageView = new ImageView(context);
-                    imageView.setOnClickListener(new View.OnClickListener() {
+
+                    imageView.setOnTouchListener(new View.OnTouchListener() {
                         @Override
-                        public void onClick(View v) {
-                            v.buildDrawingCache();
-                            Bitmap image= v.getDrawingCache();
-                            fullScreen.setImageBitmap(image);
-                            fullScreen.clearAnimation();
-                            fullScreen.setVisibility(View.VISIBLE);
-                            TranslateAnimation slide = new TranslateAnimation(0, 0, px*600,0 );
-                            slide.setDuration(1000);
-                            slide.setFillAfter(true);
-                            fullScreen.startAnimation(slide);
+                        public boolean onTouch(View v, MotionEvent event) {
+                            switch (event.getAction()) {
+                                case MotionEvent.ACTION_DOWN :
+                                    v.setAlpha(0.3f);
+                                    break;
+                                case MotionEvent.ACTION_UP :
+                                    v.setAlpha(1f);
+                                    v.buildDrawingCache();
+                                    Bitmap image= v.getDrawingCache();
+                                    fullScreen.setImageBitmap(image);
+                                    fullScreen.clearAnimation();
+                                    fullScreen.setVisibility(View.VISIBLE);
+                                    TranslateAnimation slide = new TranslateAnimation(0, 0, px*550,0 );
+                                    slide.setDuration(1000);
+                                    slide.setFillAfter(true);
+                                    fullScreen.startAnimation(slide);
+                                    break;
+                                case MotionEvent.ACTION_CANCEL :
+                                    v.setAlpha(1f);
+                            }
+                            return true;
                         }
                     });
                     picasso.load(values.get(position).getImages().get(j)).resize((int) (70 * px), (int) (70*px)).into(imageView);
                     ((MyViewHolder) holder).images.addView(imageView);
-                ((MyViewHolder) holder).images.setVisibility(View.VISIBLE);
+                    ((MyViewHolder) holder).images.setVisibility(View.VISIBLE);
                 }
             }
         }

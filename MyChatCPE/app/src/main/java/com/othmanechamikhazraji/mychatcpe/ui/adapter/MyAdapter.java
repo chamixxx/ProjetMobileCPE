@@ -26,6 +26,7 @@ public class MyAdapter extends RecyclerView.Adapter {
     private List<MessageModel> values;
     private Picasso picasso;
     private Context context;
+    private String login;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -45,7 +46,8 @@ public class MyAdapter extends RecyclerView.Adapter {
         }
     }
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(List<MessageModel> myDataSet, Picasso picasso, Context context) {
+    public MyAdapter(List<MessageModel> myDataSet, Picasso picasso, String login, Context context) {
+        this.login = login;
         this.picasso = picasso;
         values = myDataSet;
         this.context = context;
@@ -69,7 +71,7 @@ public class MyAdapter extends RecyclerView.Adapter {
         Resources r = context.getResources();
         float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, r.getDisplayMetrics());
 
-        if (values.get(position).getLogin().equals("chami")) {
+        if (values.get(position).getLogin().equals(login)) {
             ((MyViewHolder)holder).login.setText(values.get(position).getLogin().toUpperCase());
             RecyclerView.LayoutParams rootParams = (RecyclerView.LayoutParams) ((MyViewHolder) holder)
                     .rootLayout.getLayoutParams();

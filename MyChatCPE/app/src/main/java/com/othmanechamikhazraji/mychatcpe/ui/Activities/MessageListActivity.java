@@ -47,6 +47,7 @@ public class MessageListActivity extends AppCompatActivity implements PullMessag
     private ProgressBar progressBar;
     private List<MessageModel> receivedMessageList;
     private Picasso picasso;
+    private String login;
 
     private PullMessageTask pullMessageTask;
 
@@ -61,6 +62,7 @@ public class MessageListActivity extends AppCompatActivity implements PullMessag
 
         final String usernameStr = sharedPreferences.getString(EXTRA_LOGIN, "");
         final String passwordStr = sharedPreferences.getString(EXTRA_PASSWORD, "");
+        login = usernameStr;
 
         //Setup basic auth for picasso
         OkHttpClient picassoClient = new OkHttpClient();
@@ -134,7 +136,7 @@ public class MessageListActivity extends AppCompatActivity implements PullMessag
         Toast.makeText(MessageListActivity.this, R.string.messages_success, LENGTH_LONG).show();
         receivedMessageList = Util.makeMessageList(allMessageJSON);
         Collections.reverse(receivedMessageList);
-        messageAdapter = new MyAdapter(receivedMessageList, picasso, this);
+        messageAdapter = new MyAdapter(receivedMessageList, picasso, login, this);
         messageRecyclerView.setAdapter(messageAdapter);
         swipeRefreshLayout.setRefreshing(false);
     }

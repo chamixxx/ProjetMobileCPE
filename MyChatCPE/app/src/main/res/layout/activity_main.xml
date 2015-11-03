@@ -48,7 +48,7 @@
             android:id="@+id/submit_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/signIn"
+            android:text="@string/sign_in"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             custom:pb_colorComplete="@color/greenSuccess"

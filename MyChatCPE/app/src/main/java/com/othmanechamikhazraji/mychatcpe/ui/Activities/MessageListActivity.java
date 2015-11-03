@@ -2,6 +2,7 @@ package com.othmanechamikhazraji.mychatcpe.ui.Activities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,8 +10,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -60,11 +64,35 @@ public class MessageListActivity extends AppCompatActivity implements PullMessag
         SharedPreferences sharedPreferences = this.getSharedPreferences
                 ("authentication", Context.MODE_PRIVATE);
 
+        Resources r = getResources();
+        final float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, r.getDisplayMetrics());
+
         fullScreen = (ImageView) findViewById(R.id.fullScreenImage);
         fullScreen.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                v.setVisibility(View.GONE);
+            public void onClick(final View v) {
+                fullScreen.clearAnimation();
+                final TranslateAnimation slide = new TranslateAnimation(0, 0, 0,px*600 );
+                slide.setDuration(1000);
+                slide.setFillAfter(true);
+                slide.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        fullScreen.clearAnimation();
+                        v.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                fullScreen.startAnimation(slide);
             }
         });
 

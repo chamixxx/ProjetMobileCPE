@@ -5,10 +5,10 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -66,13 +66,13 @@ public class MyAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
 
         ((MyViewHolder) holder).images.setVisibility(View.GONE);
         ((MyViewHolder) holder).images.removeAllViews();
         ((MyViewHolder)holder).message.setText(values.get(position).getMessage());
         Resources r = context.getResources();
-        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, r.getDisplayMetrics());
+        final float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, r.getDisplayMetrics());
 
         if (values.get(position).getLogin().equals(login)) {
             ((MyViewHolder)holder).login.setText(values.get(position).getLogin().toUpperCase());
@@ -105,12 +105,17 @@ public class MyAdapter extends RecyclerView.Adapter {
                             v.buildDrawingCache();
                             Bitmap image= v.getDrawingCache();
                             fullScreen.setImageBitmap(image);
+                            fullScreen.clearAnimation();
                             fullScreen.setVisibility(View.VISIBLE);
+                            TranslateAnimation slide = new TranslateAnimation(0, 0, px*600,0 );
+                            slide.setDuration(1000);
+                            slide.setFillAfter(true);
+                            fullScreen.startAnimation(slide);
                         }
                     });
-                    picasso.load(values.get(position).getImages().get(j)).resize((int) (70*px),(int) (70*px)).into(imageView);
+                    picasso.load(values.get(position).getImages().get(j)).resize((int) (70 * px), (int) (70*px)).into(imageView);
                     ((MyViewHolder) holder).images.addView(imageView);
-                    ((MyViewHolder) holder).images.setVisibility(View.VISIBLE);
+                ((MyViewHolder) holder).images.setVisibility(View.VISIBLE);
                 }
             }
         }

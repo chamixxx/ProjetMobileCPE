@@ -2,6 +2,7 @@ package com.othmanechamikhazraji.mychatcpe.ui.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -27,6 +28,7 @@ public class MyAdapter extends RecyclerView.Adapter {
     private Picasso picasso;
     private Context context;
     private String login;
+    private ImageView fullScreen;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -46,11 +48,12 @@ public class MyAdapter extends RecyclerView.Adapter {
         }
     }
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(List<MessageModel> myDataSet, Picasso picasso, String login, Context context) {
+    public MyAdapter(List<MessageModel> myDataSet, Picasso picasso, String login, ImageView fullScreen, Context context) {
         this.login = login;
         this.picasso = picasso;
         values = myDataSet;
         this.context = context;
+        this.fullScreen = fullScreen;
     }
 
     // Create new views (invoked by the layout manager)
@@ -92,13 +95,20 @@ public class MyAdapter extends RecyclerView.Adapter {
             ((MyViewHolder) holder).messageBox.setBackground(context.getResources().getDrawable(R.drawable.back2));
 
         }
-
-
         if (values.get(position).getImages() != null) {
             if (values.get(position).getImages().size() != 0) {
                 for (int j=0; j<values.get(position).getImages().size(); j++) {
                     ImageView imageView = new ImageView(context);
-                    picasso.load(values.get(position).getImages().get(j)).resize(200,200).into(imageView);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            v.buildDrawingCache();
+                            Bitmap image= v.getDrawingCache();
+                            fullScreen.setImageBitmap(image);
+                            fullScreen.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    picasso.load(values.get(position).getImages().get(j)).resize((int) (70*px),(int) (70*px)).into(imageView);
                     ((MyViewHolder) holder).images.addView(imageView);
                     ((MyViewHolder) holder).images.setVisibility(View.VISIBLE);
                 }

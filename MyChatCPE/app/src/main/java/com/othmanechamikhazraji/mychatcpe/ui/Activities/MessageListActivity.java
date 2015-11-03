@@ -5,13 +5,13 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.othmanechamikhazraji.mychatcpe.R;
@@ -44,11 +44,11 @@ public class MessageListActivity extends AppCompatActivity implements PullMessag
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView.Adapter messageAdapter;
     private RecyclerView.LayoutManager messageLayoutManager;
-    private ActionBar actionBar;
 
     private List<MessageModel> receivedMessageList;
     private Picasso picasso;
     private String login;
+    private ImageView fullScreen;
 
     private PullMessageTask pullMessageTask;
 
@@ -59,6 +59,14 @@ public class MessageListActivity extends AppCompatActivity implements PullMessag
 
         SharedPreferences sharedPreferences = this.getSharedPreferences
                 ("authentication", Context.MODE_PRIVATE);
+
+        fullScreen = (ImageView) findViewById(R.id.fullScreenImage);
+        fullScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setVisibility(View.GONE);
+            }
+        });
 
         final String usernameStr = sharedPreferences.getString(EXTRA_LOGIN, "");
         final String passwordStr = sharedPreferences.getString(EXTRA_PASSWORD, "");
@@ -136,7 +144,7 @@ public class MessageListActivity extends AppCompatActivity implements PullMessag
         Toast.makeText(MessageListActivity.this, R.string.messages_success, LENGTH_LONG).show();
         receivedMessageList = Util.makeMessageList(allMessageJSON);
         Collections.reverse(receivedMessageList);
-        messageAdapter = new MyAdapter(receivedMessageList, picasso, login, this);
+        messageAdapter = new MyAdapter(receivedMessageList, picasso, login, fullScreen, this);
         messageRecyclerView.setAdapter(messageAdapter);
         swipeRefreshLayout.setRefreshing(false);
     }

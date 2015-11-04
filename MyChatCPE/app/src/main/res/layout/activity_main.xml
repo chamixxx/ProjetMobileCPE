@@ -7,7 +7,7 @@
     <LinearLayout
         android:id="@+id/edit"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:dividerPadding="20dp"
         android:orientation="vertical">
@@ -30,9 +30,10 @@
     <ImageView
         android:id="@+id/logo"
         android:transitionName="logoTransition"
+        android:layout_below="@+id/edit"
         android:layout_above="@+id/footer"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="10dp"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:src="@drawable/messenger" />
